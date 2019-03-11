@@ -1,6 +1,6 @@
 # Home Page of MPS
 
-This is the first version of MPS's Homepage developed by [the MPS Homepage Developer Team](https://github.com/orgs/mpsamurai/teams/home-page-developers/members).
+This is the first version of MPS's Homepage developed by the MPS Homepage Developers Team.
 
 # Contributors
 
