@@ -1,0 +1,60 @@
+<div class="tag-area">
+    <p class="title">{{tag_title}}</p>
+    <ul class="tag-list">
+        {% if flag == "all" %}
+            {% if "news" in request.path  %}
+            <li class="current">
+                <a href='{% url "news:index" %}#taglist'>すべて</a>
+            </li>
+            {% elif "events" in request.path %}
+            <li class="current">
+                <a href='{% url "events:index" %}#taglist'>すべて</a>
+            </li>
+            {% else %}
+            <li class="current">
+                <a href='{% url "top:index" %}'>すべて</a>
+            </li>
+            {% endif %}
+            {% for tag in tags %}
+            <li>
+                <a href='?tag={{ tag.name }}#taglist'>{{ tag.name }} </a>
+            </li>
+            {% endfor %}
+        {% elif flag == "part" %}
+            {% if "news" in request.path  %}
+            <li>
+                <a href='{% url "news:index" %}#taglist'>すべて</a>
+            </li>
+            {% elif "events" in request.path %}
+            <li>
+                <a href='{% url "events:index" %}#taglist'>すべて</a>
+            </li>
+            {% else %}
+            <li>
+                <a href='{% url "top:index" %}'>すべて</a>
+            </li>
+            {% endif %}
+
+           {% for tag in tags %}
+               {% if tag.name in tag_names %}
+               <li class="current">
+                   <a href='?tag={{ tag.name }}#taglist'>{{ tag.name }} </a>
+               </li>
+               {% else %}
+               <li>
+                   <a href='?tag={{ tag.name }}#taglist'>{{ tag.name }} </a>
+               </li>
+               {% endif %}
+            {% endfor %}
+        {% else %}
+           <li>
+               <a href='{% url "top:index" %}'>すべて</a>
+           </li>
+           {% for tag in tags %}
+           <li>
+               <a href='?tag={{ tag.name }}#taglist'>{{ tag.name }} </a>
+           </li>
+           {% endfor %}
+        {% endif %}
+    </ul>
+</div>

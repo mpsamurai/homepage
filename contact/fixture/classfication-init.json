@@ -1,0 +1,32 @@
+[
+  {
+    "model": "contact.category",
+    "pk": 1,
+    "fields": {
+      "name": "MPS",
+      "used_status": 1,
+      "identifier": "mps",
+      "color_code": "#47CBFF"
+    }
+  },
+  {
+    "model": "contact.category",
+    "pk": 2,
+    "fields": {
+      "name": "MPSCamp",
+      "used_status": 1,
+      "identifier": "mps-career",
+      "color_code": "#FFEC00"
+    }
+  },
+  {
+    "model": "contact.category",
+    "pk": 3,
+    "fields": {
+      "name": "メンバー",
+      "used_status": 1,
+      "identifier": "mps-member",
+      "color_code": "#3D6C7F"
+    }
+  }
+]

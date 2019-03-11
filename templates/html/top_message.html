@@ -1,0 +1,16 @@
+<div class="circle-thumb-wrap">
+    <ul class="circle-thumb-list">
+        <li>
+            <a href="{% url 'message:index' %}">
+                <div class="img-wrap"><img src="{{ message.photo.url }}" alt=""></div>
+                <h3 class="circle-thumb-list-title">代表挨拶</h3>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'vision:index' %}">
+                <div class="img-wrap"><img src="{{ vision.image.url }}" alt=""></div>
+                <h3 class="circle-thumb-list-title">Vision</h3>
+            </a>
+        </li>
+    </ul>
+</div>

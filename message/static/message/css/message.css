@@ -1,0 +1,136 @@
+.message-section {
+    width: 1120px;
+    margin: 0 auto;
+    padding: 60px 0 90px;
+}
+
+.message-section .profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.message-section .profile .profile-img {
+    width: 370px;
+    height: 450px;
+    margin-right: 40px;
+}
+
+.message-section .profile .profile-img img {
+    width: 370px;
+    height: 450px;
+    object-fit: cover;
+}
+
+.message-section .profile .biographical-details {
+    width: 100%;
+}
+
+.message-section .profile .biographical-details dd {
+    display: flex;
+}
+
+.message-section .profile .biographical-details .date-block {
+    width: 230px;
+}
+
+.message-section .name-of-representative {
+    margin-bottom: 60px;
+}
+
+.message-section .name-of-representative .name.jp {
+    margin-right: 40px;
+    font-weight: 600;
+    font-size: 48px;
+}
+
+.message-section .name-of-representative .name.en {
+    font-size: 20px;
+}
+
+.message-section .career {
+    padding-left: 30px;
+}
+
+.message-section .educational-background {
+    margin-bottom: 40px;
+}
+
+.message-section .message {
+    line-height: 1.9;
+    word-wrap : break-word;
+    overflow-wrap : break-word;
+}
+
+.message-section .message h1 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.8em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.message-section .message h2 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.6em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.message-section .message h3 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.4em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.message-section .message h4 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.2em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.message-section .message h5 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.0em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.message-section .message .comment {
+    margin-bottom: 15px;
+}
+
+.message-section .message .comment:last-of-type {
+    margin-bottom: 0;
+}

@@ -1,0 +1,155 @@
+.content .contact-section {
+    max-width:1200px;
+    margin: 0 auto;
+    padding: 60px;
+}
+
+.content .contact-section .contact-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.content .contact-section .contact-list li {
+    width: 350px;
+    margin-right: 20px;
+    overflow: hidden;
+}
+
+.content .contact-section .contact-list li:last-of-type {
+    margin-right: 0;
+}
+
+.content .contact-section .contact-list li .top-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 350px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 30px;
+    color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.content .contact-section .contact-list li .btn {
+    display: block;
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    color: #393939;
+    border-radius: 5px;
+    border: solid 1px #979797;
+}
+
+
+
+.content .faq-section {
+    width: 960px;
+    margin: 0 auto;
+    padding: 60px 0;
+}
+
+.content .faq-section .section-title {
+    margin-bottom: 100px;
+    text-align: center;
+}
+
+.content .faq-section h4{
+    padding-top: 150px;
+}
+
+.content .faq-section .faq-list {
+    margin-bottom: 60px;
+}
+
+.content .faq-section .faq-list:last-of-type {
+    margin-bottom: 0;
+}
+
+.content .faq-section .faq-list-item {
+    display: flex;
+}
+
+.content .faq-section .faq-list-item dt {
+    margin-right: 20px;
+}
+
+.content .faq-section .faq-list-item.question {
+    margin-top: 0.5em;
+}
+
+.content .faq-section .faq-list-item.question dt {
+    color: #7ED321;
+}
+
+.content .faq-section .faq-list-item.answer dt {
+    color: #D0021B;
+}
+
+.content .contact-section-form {
+    width: 800px;
+    margin: 0 auto;
+    padding: 60px 0 60px;
+}
+
+.content .contact-section-form .page-title {
+    margin-bottom: 60px;
+    text-align: center;
+}
+
+.content .contact-section-form .contact-table tr {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.content .contact-section-form .contact-table th {
+    width: 200px;
+    padding-right: 20px;
+    vertical-align: top;
+    text-align: right;
+    box-sizing: border-box;
+}
+
+.content .contact-section-form .contact-table th .annotation {
+    color: #D0021B;
+}
+
+.content .contact-section-form .contact-table td {
+    width: 600px;
+    box-sizing: border-box;
+}
+
+.content .contact-section-form .contact-table td input {
+    width: 100%;
+    height: 25px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: solid 1px #979797;
+    background: #D8D8D8;
+    box-sizing: border-box;
+}
+
+.content .contact-section-form .contact-table td textarea {
+    width: 100%;
+    max-height: 200px;
+    border-radius: 5px;
+    border: solid 1px #979797;
+    background: #D8D8D8;
+}
+
+.content .contact-section-form .btn-wrap {
+    text-align: center;
+}
+
+.content .contact-section-form .btn-submit {
+    width: 150px;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    color: #393939;
+    border-radius: 5px;
+    background: #D8D8D8;
+}
+

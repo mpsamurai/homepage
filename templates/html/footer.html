@@ -1,0 +1,37 @@
+{% load static %}
+
+<footer id="footer" class="footer">
+    <div class="footer-inner">
+        <section class="section address">
+            <address>
+                <div class="company-name">
+                    <p class="name short">MPS</p>
+                    <p class="name full">morningprojectsamurai</p>
+                </div>
+                <p class="address">〒171-0022<br>東京都豊島区南池袋3-18-35 OKビル201</p>
+                <p class="tel"><a href="tel:0369072338">03-6907-2338</a></p>
+                <p class="mail"><a href="mailto:contact@mpsamurai.org">contact@mpsamurai.org</a></p>
+            </address>
+        </section>
+        <section class="section contact">
+            <div class="btn-wrap"><a href="{% url 'contact:index' %}"><img src="{% static '/images/inquiry.png' %}"></a></div>
+        </section>
+        <section class="section link">
+            <div class="title">Link</div>
+            <div class="btn-sns-block">
+                <div class="btn-wrap"><a href="https://twitter.com/mpsamurai_" target="_blank"><img src="{% static '/images/twitter-logo.png' %}"
+                            alt="twitter"></a></div>
+                <div class="btn-wrap"><a href="https://www.facebook.com/mpsamurai/?fb_dtsg_ag=AdzRzfO0qRSrHVKdOCWbmgKDV3NYVFnYi--FO7VVvkxJ9A%3AAdxz63AGX8yXcgo-RZOy42-2s29iPBzWwiv-GUaFwFQXGQ"
+                        target="_blank"><img src="{% static '/images/facebook-logo.png' %}" alt="facebook"></a></div>
+            </div>
+            <div class="btn-wrap doorkeeper"><a href="https://mpsamurai.doorkeeper.jp" target="_blank"><img src="{% static '/images/doorkeeper-logo.png' %}"
+                        alt="doorkeeper"></a></div>
+            <div class="link-block">
+                <div class="btn-wrap connpass"><a href="https://mpsamurai.connpass.com/" target="_blank"><img src="{% static '/images/connpass-logo.png' %}"
+                            alt="connpass"></a></div>
+                <div class="btn-wrap peatix"><a href="https://mpsamurai.peatix.com/" target="_blank"><img src="{% static '/images/peatix-logo.jpg' %}"
+                            alt="peatix"></a></div>
+            </div>
+        </section>
+    </div>
+</footer>

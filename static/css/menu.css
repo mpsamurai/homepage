@@ -1,0 +1,45 @@
+.menu {
+    background: white;
+    z-index: 10;
+}
+
+
+.menu .nav-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+.menu .nav-section .gnav-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    max-width: 875px;
+    margin-right: 15px;
+}
+
+.menu .nav-section .gnav-list li {
+    margin-right: 15px;
+}
+
+
+.menu .nav-section .gnav-list li:last-child {
+    margin-right: 0;
+}
+
+.menu .nav-section .gnav-list a {
+    line-height: 1.0;
+    font-size: 24px;
+    color: #0097FF;
+}
+
+.fixed-menu {
+    position: fixed;
+    top: 0;
+    min-width: 1200px;
+    width: 100%;
+}

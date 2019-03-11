@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+お問い合わせ
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'contact/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="content">
+    <section class="contact-section-form">
+        <h2 class="page-title">お問い合わせ</h2>
+        <form action="{% url 'contact:form_save' %}" method="POST" accept-charset="utf-8">
+            <table class="contact-table">
+                {% for field in form %}
+                <tr>
+                    <th>{{ field.label_tag }}
+                        {% if not field.label == "" %}<span class="annotation">*</span>{% endif %}
+                    </th>
+                    <td>{{ field }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% csrf_token %}
+            <div class="btn-wrap">
+                <button class="btn-submit" type="submit">送信</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+{% endblock %}

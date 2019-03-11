@@ -1,0 +1,101 @@
+.content .vision-section {
+    display: flex;
+    justify-content: center;
+    width: 1120px;
+    margin: 0 auto;
+    padding: 60px 0 300px;
+}
+
+.content .vision-section .description {
+    margin-left: 30px;
+}
+
+.content .vision-section .description {
+    line-height: 1.9;
+    word-wrap : break-word;
+    overflow-wrap : break-word;
+}
+
+.content .vision-section .description h1 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.8em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.content .vision-section .description h2 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.6em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.content .vision-section .description h3 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.4em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.content .vision-section .description h4 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.2em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.content .vision-section .description h5 {
+    position: relative;
+    margin-top: 2.2em;
+    margin-bottom: 2.4rem;
+    padding-bottom: .1em;
+    line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.0em;
+    font-feature-settings: "palt";
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+
+}
+.content .vision-section .description p {
+    line-height: 1.9;
+}
+.content .vision-section .description p + p {
+    margin-top: 1.5em;
+}
+
+.content .vision-section .description #detail {
+    margin-bottom: 40px;
+}
+
+.content .vision-section .description #detail:last-of-type {
+    margin-bottom: 0;
+}

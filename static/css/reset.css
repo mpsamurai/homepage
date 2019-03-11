@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: #393939;
+    font-family:
+        Hiragino Sans,
+        "ヒラギノ角ゴシック",
+        Hiragino Kaku Gothic ProN,
+        "ヒラギノ角ゴ ProN W3",
+        Roboto,
+        "Droid Sans",
+        YuGothic,
+        "游ゴシック",
+        Meiryo,
+        "メイリオ",
+        Verdana,
+        "ＭＳ Ｐゴシック",
+        sans-serif;
+}
+
+ul li, ol li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    vertical-align: bottom;
+}
+
+p {
+    line-height: 1.2;
+}
+
+input, button, textarea, select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}

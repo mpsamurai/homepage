@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+FAQ
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'contact/index.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+    <section class="faq-section">
+        <h2 class="section-title">よくある質問</h2>
+        {% load filter %}
+        {% for key, faqs in faqs_by_category.items %}
+
+        <h4 id="{{ categories|categories_identifier_hash:key }}">{{ categories|categories_name_hash:key }}</h4>
+
+        <div class="faq-list-wrap">
+            <div class="faq-list">
+                {% for faq in faqs %}
+                <dl class="faq-list-item question">
+                    <dt>Q</dt>
+                    <dd>{{ faq.question | linebreaksbr}}</dd>
+                </dl>
+                <dl class="faq-list-item answer">
+                    <dt>A</dt>
+                    <dd>{{ faq.answer | linebreaksbr}}</dd>
+                </dl>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</main>
+
+
+{% endblock %}

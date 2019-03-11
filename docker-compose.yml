@@ -1,0 +1,40 @@
+version: '3'
+services:
+  homepage:
+    restart: always
+    build: Dockerfiles/homepage/
+    command: >
+      bash -c 'python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py loaddata contact/fixture/classfication-init.json &&
+      python manage.py collectstatic --no-input &&
+      gunicorn -b 0.0.0.0:8000 homepage.wsgi'
+    env_file:
+      - homepage.env
+    ports:
+     - "8000:8000"
+    working_dir: /code/
+    volumes:
+     - .:/code
+     - ./static/:/code/static
+    networks:
+     - homepage-network
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+     - "80:80"
+     - "443:443"
+    volumes:
+     - ./Dockerfiles/nginx/:/etc/nginx
+     - ./static:/www/static
+     - ./cert:/etc/nginx/certs:ro
+     - ./media:/media
+    depends_on:
+     - homepage
+    networks:
+     - homepage-network
+
+networks:
+  homepage-network:
+    external: false

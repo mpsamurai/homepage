@@ -1,0 +1,109 @@
+.content .circle-thumb-list {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.circle-thumb-list li {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    height: auto;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.circle-thumb-list .circle-thumb-list-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-weight: 500;
+    font-size: 50px;
+    text-align: center;
+    color: #fff;
+    transform: translate(-50%, -50%);
+}
+
+.circle-thumb-list .img-wrap {
+    background: #000;
+}
+
+.circle-thumb-list img {
+    width: 540px;
+    height: 540px;
+    opacity: 0.7;
+}
+
+.content .news-card-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.content .news-card-list-item {
+    width: 360px;
+    margin: 0 20px 40px 0;
+}
+
+.content .news-card-list-item:nth-child(3n) {
+    margin-right: 0;
+}
+
+.content .news-card-list-item:last-child {
+    margin-right: 0;
+}
+
+.content .news-card-list-item .img-wrap {
+    width: 100%;
+    height: 360px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.content .news-card-list-item .img-wrap img {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    transition-duration: 0.3s;
+}
+
+.content .news-card-list-item a:hover .img-wrap img {
+    transform: scale(1.2);
+    transition-duration: 0.3s;
+}
+
+.content .news-card-list-item .description {
+    height: 200px;
+    padding: 20px;
+    border-radius: 10px;
+    border: solid 1px #979797;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.content .news-card-list-item .description {
+    color: #393939;
+}
+
+.content .news-card-list-item .description .news-tags-wrap {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 90%;
+}
+
+.content .news-card-list-item .date {
+    display: block;
+    margin-bottom: 25px;
+    font-size: 18px;
+}
+
+.content .news-card-list-item .news-title {
+    margin-bottom: 15px;
+    font-size: 26px;
+    text-align: left;
+}
+
+.content .news-card-list-item .sub-title {
+    font-size: 16px;
+}

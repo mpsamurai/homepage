@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+Services
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'services/service.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class=" content">
+    <section class="service-section">
+        {% for service in page %}
+        <ul class="service-list">
+            <li>
+                <a href="{{ service.url }}" target="_blank">
+                    <img src="{{ service.image.url }}" alt="{{ service.name }}">
+                    <div class="description">
+                        <p class="title">{{ service.name }}</p>
+                        <p class="more">Read More</p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        {% endfor %}
+    </section>
+</main>
+<div>
+    {% include "pagination.html" %}
+</div>
+
+{% endblock %}

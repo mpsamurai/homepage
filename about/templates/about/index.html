@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}
+About
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'about/css/about.css' %}">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+  <section class="mps-section">
+    <div class="split-section">
+      <div class="overview">
+        <h2 class="company-name">
+          <span class="name short">MPS</span>
+          <span class="name full">morning project samurai</span>
+        </h2>
+        <table class="overview-table">
+          <tbody>
+            <tr>
+              <th>住所</th>
+              <td>〒171-0022<br>東京都豊島区南池袋3-18-35 OKビル201</td>
+            </tr>
+            <tr>
+              <th>電話</th>
+              <td>03-6907-2338</td>
+            </tr>
+            <tr>
+              <th>代表</th>
+              <td>金子　純也</td>
+            </tr>
+            <tr>
+              <th>設立</th>
+              <td>2014年5月</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gmap">
+        <iframe src="https://static.parastorage.com/services/santa/1.5278.2/static/external/googleMap.html?language=ja&amp;lat=35.7246958&amp;long=139.71465360000002&amp;address='〒171-0022 東京都豊島区南池袋３丁目１８&minus;３５ ＯＫビル'&amp;addressInfo=MPSAtelier&amp;showZoom=true&amp;showStreetView=true&amp;showMapType=true"
+          width="100%" height="300" frameborder="0" scrolling="no" title="Google Maps" aria-label="Google Maps" style="border:0">
+        </iframe>
+      </div>
+    </div>
+    {% include "top_message.html" %}
+  </section>
+  <section class="employee-introduction">
+    <div class="content-wrap">
+      <h2 class="section-title">社員紹介</h2>
+      {% for employee in employees %}
+      <div class="profile" {% if employee.background_image %} style="background-image:url({{ employee.background_image.url }});"
+        {% endif %}>
+        {% if employee.display %}
+        <div class="profile-img"><img src="{{ employee.image.url }}" alt="{{ employee.name }}"></div>
+        {% endif %}
+        <div class="description">
+          <p class="name">{{ employee.name }}</p>
+          <div class="comment">
+            <p class="detail">{{ employee.message | linebreaksbr }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  <section class="member-system">
+    <div class="content-wrap">
+      <h2 class="section-title">メンバー制度</h2>
+      <div class="description">
+        <p class="detail">MPSはメンバー制度を作ってお仕事をしています。<br>社員という括りではなく、メンバーが多数在籍しています。メンバーの方は月給ではなく、仕事ごとの報酬制でお仕事をしていたり、MPSの人脈を使ってイベントを立てたり、他の会社と掛け持ちしていたり、育児をしながら、フリーで働きながら、自由かつ、仕事を選んで働ける働き方をしています。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="member-voice">
+    <div class="content-wrap">
+      <h2 class="section-title">メンバーの声</h2>
+      <div class="profile-list">
+        {% for member in members %}
+        <div class="profile-card">
+          {% if member.display %}
+          <div class="profile-img"><img src="{{ member.image.url }}" alt="{{ member.name }}"></div>
+          {% endif %}
+          <div class="description">
+            <p class="name">{{ member.name }}</p>
+            <div class="comment">
+              <p class="detail">{{ member.message | linebreaksbr }}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script type="text/javascript">
+  $(".profile-list").slick(
+    {
+      infinite: true,
+      arrows: false,
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      accessibility: true,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      speed: 300,
+      pauseOnHover: true,
+    }
+  );
+
+</script>
+{% endblock %}

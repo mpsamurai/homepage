@@ -1,0 +1,52 @@
+.tag-area {
+    display: flex;
+    align-items: center;
+    padding: 100px 20px 60px 20px;
+    margin: -40px auto 0px auto;
+}
+
+.tag-area .title {
+    margin-right: 40px;
+    font-weight: 700;
+    font-size: 20px;
+    color: #393939;
+}
+
+.tag-area .tag-list {
+    display: flex;
+    align-items: center;
+}
+
+.tag-area .tag-list li {
+    position: relative;
+    margin-right: 50px;
+}
+
+.tag-area .tag-list li::after {
+    content: "/";
+    position: absolute;
+    display: block;
+    top: 50%;
+    right: -30px;
+    transform: translateY(-50%);
+}
+
+.tag-area .tag-list li:last-child::after {
+    display: none;
+}
+
+.tag-area .tag-list li.current {
+    padding: 0 10px;
+    border-radius: 10px;
+    background: #393939;
+}
+
+.tag-area .tag-list li.current a {
+    color: #fff;
+}
+
+.tag-area .tag-list a {
+    font-weight: 700;
+    font-size: 20px;
+    color: #393939;
+}

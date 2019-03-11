@@ -1,0 +1,31 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.pagination li {
+  margin-right: 5px;
+  border: 1px solid #393939; /* Gray */
+  list-style: none;
+}
+
+.pagination li div {
+  display: block;
+  padding: 8px 16px;
+  color: #393939;
+  text-decoration: none;
+}
+
+.pagination .active div {
+  color: #fff ;
+  background: #393939;
+}
+
+.pagination li div a:link {
+  color: #393939;
+}
+.pagination li div a:visited {
+  color: #393939;
+}

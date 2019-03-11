@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+.DS_Store
+db.sqlite3
+media
+__pycache__
+*/migrations/*_*.py
+homepage.env
+cert
+**/create_user.sql

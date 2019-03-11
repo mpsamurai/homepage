@@ -1,0 +1,32 @@
+<ul class="pagination">
+  {% if paging.previous %}
+  <li>
+    <div>
+      <a href="?page={{ paging.previous }}#taglist">&lt;</a>
+    </div>
+  </li>
+  {% endif%}
+
+  {% for num in paging.range %}
+  {% if paging.current == num %}
+  <li class="active">
+    <div>
+      {{ num }}
+    </div>
+  </li>
+  {% else %}
+  <li>
+    <div>
+      <a href="?page={{ num }}#taglist">{{ num }}</a>
+    </div>
+  </li>
+  {% endif %}
+  {% endfor %}
+  {% if paging.next %}
+  <li>
+    <div>
+      <a href="?page={{ paging.next }}#taglist">&gt;</a>
+    </div>
+  </li>
+  {% endif %}
+</ul>

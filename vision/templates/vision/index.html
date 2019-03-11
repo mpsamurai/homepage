@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Vision
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'vision/css/vision.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<main class="content">
+    <section class="vision-section">
+        <div class="description">
+            <div id="detail">
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript" src="{% static 'js/marked.min.js' %}"></script>
+
+<script type="text/javascript">
+    document.getElementById('detail').innerHTML =
+        marked(`{{ text | safe}}`);
+</script>
+{% endblock %}

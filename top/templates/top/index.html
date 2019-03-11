@@ -1,0 +1,140 @@
+{% extends "top_base.html" %}
+
+{% block title %}
+Top
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'top/css/top.css' %}">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+{% endblock %}
+
+{% block content %}
+<main class="content">
+    <section class="news-section">
+        <div class="section-head">
+            <h2 class="section-title top is-news">NEWS</h2>
+        </div>
+        <div class="slider">
+            {% if news_topic.thumbnail.url %}
+            <div>
+                <article class="news-list-item">
+                    <a href='{% url "news:article" news_topic.id %}'>
+                        <div class=" img-wrap"><img src="{{ news_topic.thumbnail.url }}" alt="{{ news_topic.title|truncatechars:"25"}}">
+                        </div>
+                        <time class="date">{{ news_topic.updated_date|date:"Y/m/d f" }}</time>
+                        <h3 class="news-title">{{ news_topic.title|truncatechars:"25" }}</h3>
+                    </a>
+                </article>
+            </div>
+            {% endif %}
+            {% for article in news %}
+            {% if article.thumbnail.url %}
+            <div>
+                <article class="news-list-item">
+                    <a href='{% url "news:article" article.id %}'>
+                        <div class=" img-wrap"><img src="{{ article.thumbnail.url }}" alt="{{ article.title|truncatechars:"25" }}">
+                        </div>
+                        <time class="date">{{ article.updated_date|date:"Y/m/d f" }}</time>
+                        <h3 class="news-title">{{ article.title|truncatechars:"25"}}</h3>
+                    </a>
+                </article>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="btn-wrap"><a href="{% url 'news:index' %}">Read More</a></div>
+    </section>
+    <section class="message-section">
+        <div class="section-head">
+            <h2 class="section-title top is-message">Message</h2>
+        </div>
+        {% include "top_message.html" %}
+    </section>
+    <section class="event-section">
+        <div class="section-head">
+            <h2 class="section-title top">Events</h2>
+        </div>
+        <div class="event-slider">
+            {% for event in events %}
+            <div class="slide">
+                <a href="{{ event.public_url }}">
+                    <img src="{{ event.image_url }}" alt="{{ event.title }}">
+                    <div class="description">
+                        {{ event.title }}
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="service-section">
+        <div class="section-head">
+            <h2 class="section-title top">Services</h2>
+        </div>
+        <div class="content-wrap">
+            <div class="slider-wrap">
+                <div class="service-slider">
+                    {% for service in services %}
+                    <div>
+                        <div class="service-content">
+                            <a href="{{ service.url }}" target="_blank">
+                                <div class="img-wrap">
+                                    <img src="{{ service.thumbnail.url }}" alt="{{ service.name }}">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script type="text/javascript">
+    $(".slider").slick({
+        infinite: true,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        prevArrow: '<div class="slider-arrow slider-prev"><img src=' + '{% static "top/images/arrow_prev.png" %}' + ' alt="＜" ></div>',
+        nextArrow: '<div class="slider-arrow slider-next"><img src=' + '{% static "top/images/arrow_next.png" %}' + ' alt="＞" ></div>',
+    });
+
+    $('.event-slider').slick({
+        dots: true,
+        prevArrow: false,
+        nextArrow: false,
+        arrows: false,
+        infinite: true,
+        accessibility: true,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        speed: 300,
+        slidesToShow: 1,
+        pauseOnHover: true,
+        pauseOnDotsHover: true,
+    });
+
+    $(".service-slider").slick({
+        infinite: true,
+        accessibility: true,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        speed: 300,
+        pauseOnHover: true,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        prevArrow: '<div class="slider-arrow slider-prev"><img src=' + '{% static "top/images/arrow_prev.png" %}' + ' alt="＜" ></div>',
+        nextArrow: '<div class="slider-arrow slider-next"><img src=' + '{% static "top/images/arrow_next.png" %}' + ' alt="＞" ></div>',
+    });
+
+</script>
+{% endblock %}

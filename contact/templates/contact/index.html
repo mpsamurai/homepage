@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+お問い合わせ
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'contact/index.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="content">
+    <section class="contact-section">
+        <ul class="contact-list">
+            {% for category in categories %}
+            <li class="{{ category.identifier }}">
+                <div class="top-panel" style="background-color : {{ category.color_code}}">
+                    <p class="title">{{ category.name }}</p>
+                </div>
+                <a class="btn" href="{% url 'contact:faq_index' %}#{{  category.identifier  }}">よくある質問</a>
+                <a class="btn" href="{% url 'contact:form_index' category_id=category.pk %}">お問い合わせ</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</main>
+
+{% endblock %}

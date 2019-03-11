@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+Events
+{% endblock %}
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'events/events.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+    <div id="taglist"></div>
+    {% with "タグ" as tag_title %}
+    {% include "tags.html" %}
+    {% endwith %}
+    <section class="service-section">
+        {% if events %}
+        {% for event, is_over in events %}
+        <ul class="service-list">
+            <li>
+                <a href="{{ event.public_url }}" target="_blank">
+                    {% if is_over %}
+                    <img class="end-event" src="{{ event.image_url }}" alt="{{ event.title }}">
+                    <div class="description">
+                        <p class="title">{{ event.title }}</p>
+                        <p class="event-end">終了しました</p>
+                        <p class="more">Read More</p>
+                    </div>
+                    {% else %}
+                    <img class="event" src="{{ event.image_url }}" alt="{{ event.title }}">
+                    <div class="description">
+                        <p class="title">{{ event.title }}</p>
+                        <p class="more">Read More</p>
+                    </div>
+                    {% endif %}
+                </a>
+            </li>
+        </ul>
+        {% endfor %}
+        {% else %}
+        <div>
+            入力されたタグのEventは、存在しません。
+        </div>
+        {% endif %}
+    </section>
+
+    <div>
+        {% include "pagination.html" %}
+    </div>
+
+</main>
+
+{% endblock %}

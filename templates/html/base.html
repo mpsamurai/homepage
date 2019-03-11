@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <title>{% block title %}{% endblock %}</title>
+  {% load static%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/menu.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/pagination.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/tags.css' %}">
+  {% block metadata %} {% endblock %}
+</head>
+
+<body>
+  <header class="header">
+    {% include "menu.html" %}
+    {% if top and top.image %}
+    <div class="main-visual">
+      <img src="{{ top.image.url }}" alt="{{ top.title }} ">
+      <div class="page-name">{{ top.title }}</div>
+    </div>
+    {% else %}
+    <div class="main-provisional-visual">
+      <div class="page-name">{{ top.title }}</div>
+    </div>
+    {% endif %}
+  </header>
+
+  {% block content %}{% endblock %}
+  {% include "footer.html" %}
+  {% block script %}{% endblock %}
+  <script type="text/javascript" src={% static 'js/menu.js' %}></script>
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+Message
+{% endblock %}
+
+
+{% block metadata %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'message/css/message.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="content">
+    <section class="message-section">
+        <div class="profile">
+            <div class="profile-img">
+                <img src="{{ message.photo.url }}" alt="">
+            </div>
+            <div class="biographical-details">
+                <div class="name-of-representative">
+                    <span class="name jp">{{ message.name }}</span>
+                    <span class="name en">{{ message.name_english }}</span>
+                </div>
+                <div class="career">
+                    <dl class="educational-background">
+                        <dt>最終学歴</dt>
+                        {% for data in educations %}
+                        <dd>{{ data.title }}</dd>
+                        {% endfor %}
+                    </dl>
+                    <dl class="employment-history">
+                        <dt>職歴</dt>
+                        {% for data in works %}
+                        <dd>
+                            <div class="date-block">
+                                {{ data.started_at | date:"Y年m月" }} ~
+                                {% if data.ended_at == null %}
+                                    {{ "現在" }}
+                                {% else %}
+                                    {{ data.ended_at | date:"Y年m月" }}
+                                {% endif %}
+                            </div>
+                            <div class="detail-block">{{ data.title }}</div>
+                        </dd>
+                        {% endfor %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="message">
+            {{ message.body | linebreaksbr }}
+        </div>
+    </section>
+</main>
+
+
+{% endblock %}
