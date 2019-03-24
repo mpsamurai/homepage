@@ -1,0 +1,48 @@
+{% load static %}
+
+<section>
+    <form action="" method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+            {% if field.html_name == 'image' %}
+                <img id="update_image" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                {{ field }}
+
+                <script>
+                    var obj1 = document.getElementById("id_image");
+                       obj1.addEventListener("change", function(evt){
+                          var file = evt.target.files;
+                          var reader = new FileReader();
+
+                          //dataURL形式でファイルを読み込む
+                          reader.readAsDataURL(file[0]);
+
+                          //ファイルの読込が終了した時の処理
+                          reader.onload = function(){
+                            var dataUrl = reader.result;
+
+                            //読み込んだ画像とdataURLを書き出す
+                            document.getElementById("update_image").src = dataUrl;
+
+                          }
+                    },false);
+                </script>
+
+            {% elif field.html_name == 'thumbnail' %}
+                <img src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                {{ field }}
+            {% elif field.html_name == 'created_date' %}
+                <p>created_date</p>
+            {% elif field.html_name == 'title' %}
+                <p>{{ field.value }}</p>
+            {% elif field.html_name == 'article' %}
+                <p>{{ field.value }}</p>
+            {% elif field.html_name == 'tags' %}
+                <p>{{ field.value }}</p>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit">Update</button>
+    </form>
+</section>

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from .models import Top, Article, ArticleTag
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.views import generic
 
 def _get_page(list_, page_no, count=9):
     paginator = Paginator(list_, count)
@@ -119,3 +119,22 @@ def article(request, article_id):
     }
 
     return render(request, "news/article.html", data)
+
+class IndexView(generic.ListView):
+    model = Article
+    paginated_by = 5
+    template_name = 'news/edit_list.html'
+
+class UpdateView(generic.edit.UpdateView):
+    model =  Article
+    fields = '__all__'
+    template_name = 'news/update.html'
+
+
+"""
+def edit_list(request):
+    data = {
+        'title': 'testです',
+    }
+    return render(request, "news/edit_list.html", data)
+"""
