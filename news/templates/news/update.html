@@ -6,7 +6,22 @@
 
         {% for field in form %}
             {% if field.html_name == 'image' %}
-                <img id="update_image" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                <!-- <img id="update_image" src="{% get_media_prefix %}/{{ field.value }}" alt=""> -->
+
+
+
+                <div style="position: relative;">
+                    <canvas id="update_image" width="1680" height="1050" style="position: relative; z-index: 1;"></canvas>
+                    <img style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                </div>
+                <div>
+                    <canvas id="trimming_image" width="1680" height="1050"></canvas>
+                </div>
+
+
+
+
+
                 {{ field }}
 
                 <script>
@@ -28,6 +43,98 @@
                           }
                     },false);
                 </script>
+
+<script>
+
+    let startX;
+    let startY;
+    let endX;
+    let endY;
+
+    document.addEventListener("mousedown", (e) => {
+        let canvas = document.getElementById('update_image');
+
+        startX = e.pageX - canvas.offsetLeft;
+        startY = e.pageY - canvas.offsetTop;
+
+
+
+        console.log(startX, startY);
+        document.addEventListener("mousemove", keyMove);
+
+
+
+    });
+
+    document.addEventListener("mouseup", (e) => {
+        console.log("up");
+
+        drawSlice();
+
+        removeHandler();
+    });
+
+    let keyMove = (e) => {
+        console.log("move");
+        let canvas = document.getElementById('update_image');
+        let ctx = canvas.getContext('2d');
+
+        endX = e.pageX - canvas.offsetLeft;
+        endY = e.pageY - canvas.offsetTop;
+
+
+
+        ctx.strokeStyle="blue";
+        ctx.beginPath();
+        ctx.clearRect(0, 0, 10000, 10000);
+        ctx.strokeRect(startX, startY, endX - startX, endY - startY);
+
+
+    }
+
+    let removeHandler = () => {
+      document.removeEventListener("mousemove", keyMove);
+    }
+
+    function draw() {
+      var ctx = document.getElementById('update_image').getContext('2d');
+      var img = new Image();
+      img.onload = function(){
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = 'profile.png';
+    }
+
+    function drawSlice() {
+      var ctx = document.getElementById('trimming_image').getContext('2d');
+      var img = new Image();
+      img.src = '{% get_media_prefix %}/{{ field.value }}';
+
+      img.onload = function(){
+        ctx.drawImage(img, startX, startY, endX - startX, endY - startY, 0, 0, endX - startX, endY - startY);
+      };
+      img.src = '{% get_media_prefix %}/{{ field.value }}';
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             {% elif field.html_name == 'thumbnail' %}
                 <img src="{% get_media_prefix %}/{{ field.value }}" alt="">
