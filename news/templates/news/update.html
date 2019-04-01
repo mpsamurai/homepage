@@ -11,16 +11,12 @@
 
 
                 <div style="position: relative;">
-                    <canvas id="update_image" width="1680" height="1050" style="position: relative; z-index: 1;"></canvas>
-                    <img style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                    <canvas id="base_image" width="1680" height="1050" style="position: relative; z-index: 1;"></canvas>
+                    <img id="update_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
                 </div>
                 <div>
                     <canvas id="trimming_image" width="1680" height="1050"></canvas>
                 </div>
-
-
-
-
 
                 {{ field }}
 
@@ -39,31 +35,142 @@
 
                             //読み込んだ画像とdataURLを書き出す
                             document.getElementById("update_image").src = dataUrl;
-
                           }
                     },false);
                 </script>
 
+
+
+
 <script>
 
+
+
+
+
+class Clipper {
+
+    constructor(_name) {
+        this.coordinate = [];
+        this.viewerList = [];
+    }
+
+    addViewer(obj) {
+        this.viewerList.push(obj);
+    }
+
+    /*
+    deleteViewer() {
+        console.log(this.viewerList)
+    }
+    */
+
+    notifyViewers() {
+        console.log(this.viewerList);
+        let _name = this.name
+        this.viewerList.map(function(element) {
+            element.update(_name);
+        });
+    }
+/*
+    getClipperStatus() {
+        console.log(this.viewerList);
+    }
+*/
+
+    clipImage() {
+
+        const canvas = this.getCanvas();
+
+        document.addEventListener("mousedown", (e) => {
+            this.coordinate = this.getCoordinate(e.pageX, e.pageY, canvas.offsetLeft, canvas.offsetTop);
+            console.log(this.coordinate);
+            document.addEventListener("mousemove", keyMove);
+        });
+
+        document.addEventListener("mouseup", (e) => {
+            this.coordinate = this.getCoordinate(e.pageX, e.pageY, canvas.offsetLeft, canvas.offsetTop);
+            console.log(this.coordinate);
+            removeHandler();
+        });
+
+        const keyMove = (e) => {
+            console.log("move");
+        }
+
+        const removeHandler = () => {
+          document.removeEventListener("mousemove", keyMove);
+        }
+    }
+
+    getCoordinate(coordinateX, coordinateY, offsetLeft, offsetTop) {
+        return [coordinateX - offsetLeft, coordinateY - offsetTop];
+    };
+
+    getCanvas() {
+        const canvas = document.getElementById('base_image');
+        return canvas;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+class Viewer {
+    constructor(_name) {
+        this.name = _name
+    }
+
+    update(_name) {
+        console.log(_name);
+    }
+}
+
+let clipper1 = new Clipper('太郎1');
+let viewer1 = new Viewer('viewer1');
+let viewer2 = new Viewer('viewer2');
+
+clipper1.addViewer(viewer1);
+clipper1.addViewer(viewer2);
+clipper1.clipImage();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
     let startX;
     let startY;
     let endX;
     let endY;
 
     document.addEventListener("mousedown", (e) => {
-        let canvas = document.getElementById('update_image');
+        let canvas = document.getElementById('base_image');
 
         startX = e.pageX - canvas.offsetLeft;
         startY = e.pageY - canvas.offsetTop;
 
-
-
         console.log(startX, startY);
         document.addEventListener("mousemove", keyMove);
-
-
-
     });
 
     document.addEventListener("mouseup", (e) => {
@@ -76,7 +183,7 @@
 
     let keyMove = (e) => {
         console.log("move");
-        let canvas = document.getElementById('update_image');
+        let canvas = document.getElementById('base_image');
         let ctx = canvas.getContext('2d');
 
         endX = e.pageX - canvas.offsetLeft;
@@ -97,7 +204,7 @@
     }
 
     function draw() {
-      var ctx = document.getElementById('update_image').getContext('2d');
+      var ctx = document.getElementById('base_image').getContext('2d');
       var img = new Image();
       img.onload = function(){
         ctx.drawImage(img, 0, 0);
@@ -108,6 +215,7 @@
     function drawSlice() {
       var ctx = document.getElementById('trimming_image').getContext('2d');
       var img = new Image();
+      // img.src = '{% get_media_prefix %}/{{ field.value }}';
       img.src = '{% get_media_prefix %}/{{ field.value }}';
 
       img.onload = function(){
@@ -115,6 +223,12 @@
       };
       img.src = '{% get_media_prefix %}/{{ field.value }}';
     }
+*/
+
+
+
+
+
 </script>
 
 
