@@ -50,15 +50,34 @@
 <script>
 
 
+(function() {
 
+
+/*
+    var items = [1,2,3,4,5];
+
+    var result = items.map(function( value ) {
+
+        return value * 2;
+
+    });
+
+    console.log( result );
+*/
+
+
+
+})();
 
 
 
 class Clipper {
 
     constructor(_name) {
-        this.startCoordinate = [];
-        this.endCoordinate = [];
+        this.startX;
+        this.startY;
+        this.endX;
+        this.endY;
         this.viewerList = [];
     }
 
@@ -92,21 +111,27 @@ class Clipper {
         const canvas = this.setCanvas();
 
         document.addEventListener("mousedown", (e) => {
-            this.startCoordinate = this.getCoordinate(e.clientX, e.clientY, canvas.offsetLeft, canvas.offsetTop);
-            console.log(this.startCoordinate);
+            this.startX = this.getCoordinate(e.pageX, canvas.offsetLeft);
+            this.startY = this.getCoordinate(e.pageY, canvas.offsetTop);
             document.addEventListener("mousemove", keyMove);
         });
 
         document.addEventListener("mouseup", (e) => {
-            this.endCoordinate = this.getCoordinate(e.clientX, e.clientY, canvas.offsetLeft, canvas.offsetTop);
-            console.log(this.endCoordinate);
+            this.endX = this.getCoordinate(e.pageX, canvas.offsetLeft);
+            this.endY = this.getCoordinate(e.pageY, canvas.offsetTop);
+            console.log(this.endX, this.endY);
             const ctx = this.setRectangle(canvas);
             this.drawRectangle(ctx);
             removeHandler();
         });
 
         const keyMove = (e) => {
-            console.log("move");
+            this.endX = this.getCoordinate(e.pageX, canvas.offsetLeft);
+            this.endY = this.getCoordinate(e.pageY, canvas.offsetTop);
+            console.log(this.endX, this.endY);
+            const ctx = this.setRectangle(canvas);
+            this.clearRectangle(ctx);
+            this.drawRectangle(ctx);
         }
 
         const removeHandler = () => {
@@ -126,12 +151,16 @@ class Clipper {
         return ctx;
     }
 
-    getCoordinate(_coordinateX, _coordinateY, _offsetLeft, _offsetTop) {
-        return [_coordinateX - _offsetLeft, _coordinateY - _offsetTop];
+    getCoordinate(_coordinateVal, _offsetVal) {
+        return _coordinateVal - _offsetVal;
     };
 
     drawRectangle(_ctx) {
-        _ctx.fillRect(this.startCoordinate[0], this.startCoordinate[1], this.endCoordinate[0] - this.startCoordinate[0], this.endCoordinate[1] - this.startCoordinate[1]);
+        _ctx.strokeRect(this.startX, this.startY, this.endX - this.startX, this.endY - this.startY);
+    }
+
+    clearRectangle(_ctx) {
+        _ctx.clearRect(0, 0, baseImage.clientWidth, baseImage.clientHeight);
     }
 }
 
@@ -144,6 +173,9 @@ class Viewer {
         console.log(_name);
     }
 }
+
+const baseImage = document.getElementById('base_image');
+
 
 let clipper1 = new Clipper('太郎1');
 let viewer1 = new Viewer('viewer1');
