@@ -1,4 +1,9 @@
+{% extends "news_update.html" %}
+
 {% load static %}
+
+{% block content %}
+
 
 <section>
     <form action="" method="post">
@@ -48,10 +53,12 @@
 
 
 
+
 class Clipper {
 
     constructor(_name) {
-        this.coordinate = [];
+        this.startCoordinate = [];
+        this.endCoordinate = [];
         this.viewerList = [];
     }
 
@@ -78,19 +85,23 @@ class Clipper {
     }
 */
 
+
+
     clipImage() {
 
-        const canvas = this.getCanvas();
+        const canvas = this.setCanvas();
 
         document.addEventListener("mousedown", (e) => {
-            this.coordinate = this.getCoordinate(e.pageX, e.pageY, canvas.offsetLeft, canvas.offsetTop);
-            console.log(this.coordinate);
+            this.startCoordinate = this.getCoordinate(e.clientX, e.clientY, canvas.offsetLeft, canvas.offsetTop);
+            console.log(this.startCoordinate);
             document.addEventListener("mousemove", keyMove);
         });
 
         document.addEventListener("mouseup", (e) => {
-            this.coordinate = this.getCoordinate(e.pageX, e.pageY, canvas.offsetLeft, canvas.offsetTop);
-            console.log(this.coordinate);
+            this.endCoordinate = this.getCoordinate(e.clientX, e.clientY, canvas.offsetLeft, canvas.offsetTop);
+            console.log(this.endCoordinate);
+            const ctx = this.setRectangle(canvas);
+            this.drawRectangle(ctx);
             removeHandler();
         });
 
@@ -103,25 +114,26 @@ class Clipper {
         }
     }
 
-    getCoordinate(coordinateX, coordinateY, offsetLeft, offsetTop) {
-        return [coordinateX - offsetLeft, coordinateY - offsetTop];
-    };
-
-    getCanvas() {
+    setCanvas() {
         const canvas = document.getElementById('base_image');
         return canvas;
     }
 
+    setRectangle(_canvas) {
+        const ctx = _canvas.getContext('2d');
+        ctx.strokeStyle = "blue";
+        ctx.beginPath();
+        return ctx;
+    }
+
+    getCoordinate(_coordinateX, _coordinateY, _offsetLeft, _offsetTop) {
+        return [_coordinateX - _offsetLeft, _coordinateY - _offsetTop];
+    };
+
+    drawRectangle(_ctx) {
+        _ctx.fillRect(this.startCoordinate[0], this.startCoordinate[1], this.endCoordinate[0] - this.startCoordinate[0], this.endCoordinate[1] - this.startCoordinate[1]);
+    }
 }
-
-
-
-
-
-
-
-
-
 
 class Viewer {
     constructor(_name) {
@@ -267,3 +279,5 @@ clipper1.clipImage();
         <button type="submit">Update</button>
     </form>
 </section>
+{% endblock %}
+
