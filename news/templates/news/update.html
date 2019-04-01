@@ -91,11 +91,11 @@ class Clipper {
     }
     */
 
-    notifyViewers() {
+    notifyViewers(_startX, _startY, _endX, _endY) {
         console.log(this.viewerList);
         let _name = this.name
         this.viewerList.map(function(element) {
-            element.update(_name);
+            element.update(_startX, _startY, _endX, _endY);
         });
     }
 /*
@@ -123,6 +123,7 @@ class Clipper {
             const ctx = this.setRectangle(canvas);
             this.drawRectangle(ctx);
             removeHandler();
+            this.notifyViewers(this.startX, this.startY, this.endX, this.endY);
         });
 
         const keyMove = (e) => {
@@ -137,6 +138,7 @@ class Clipper {
         const removeHandler = () => {
           document.removeEventListener("mousemove", keyMove);
         }
+
     }
 
     setCanvas() {
@@ -169,8 +171,11 @@ class Viewer {
         this.name = _name
     }
 
-    update(_name) {
-        console.log(_name);
+    update(_startX, _startY, _endX, _endY) {
+        console.log("*** startX:" + _startX + " ***");
+        console.log("*** startY:" + _startY + " ***");
+        console.log("*** endX:" + _endX + " ***");
+        console.log("*** endY:" + _endY + " ***");
     }
 }
 
@@ -179,10 +184,8 @@ const baseImage = document.getElementById('base_image');
 
 let clipper1 = new Clipper('太郎1');
 let viewer1 = new Viewer('viewer1');
-let viewer2 = new Viewer('viewer2');
 
 clipper1.addViewer(viewer1);
-clipper1.addViewer(viewer2);
 clipper1.clipImage();
 
 
