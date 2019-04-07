@@ -11,16 +11,21 @@
 
         {% for field in form %}
             {% if field.html_name == 'image' %}
-                <!-- <img id="update_image" src="{% get_media_prefix %}/{{ field.value }}" alt=""> -->
 
-
-
+                <!--
                 <div style="position: relative;">
                     <canvas id="base_image" width="1680" height="1050" style="position: relative; z-index: 1;"></canvas>
                     <img id="update_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
                 </div>
+                -->
+
+                <div style="position: relative;">
+                    <canvas id="base_canvas" width="1680" height="1050" style="position: relative; z-index: 1;"></canvas>
+                    <img style="display: none;" id="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                </div>
+
                 <div>
-                    <canvas id="trimming_image" width="1680" height="1050"></canvas>
+                    <canvas id="trimming_canvas" width="1680" height="1050"></canvas>
                 </div>
 
                 {{ field }}
@@ -47,8 +52,8 @@
 */
 
 
-                    const baseImage = document.getElementById("id_image");
-                    baseImage.addEventListener("change", function(e){
+                    const changeImage = document.getElementById("id_image");
+                    changeImage.addEventListener("change", function(e){
                         const file = e.target.files;
                         const reader = new FileReader();
 
@@ -60,9 +65,7 @@
                             const dataUrl = reader.result;
 
                             //読み込んだ画像とdataURLを書き出す
-                            document.getElementById("update_image").src = dataUrl;
-
-                            var test = document.getElementById("update_image").src;
+                            document.getElementById("base_image").src = dataUrl;
                         }
                     },false);
 
@@ -75,39 +78,22 @@
 
 <script>
 
-
-(function() {
-
-
-/*
-    var items = [1,2,3,4,5];
-
-    var result = items.map(function( value ) {
-
-        return value * 2;
-
-    });
-
-    console.log( result );
-*/
-
-
-
-})();
-
-
-
 class Clipper {
 
-    constructor() {
+    constructor(_imgUrl) {
         this.startX;
         this.startY;
         this.endX;
         this.endY;
         this.viewerList = [];
-        this.canvas = document.getElementById('base_image');
+        this.canvas = document.getElementById('base_canvas');
         this.ctx = this.canvas.getContext('2d');
         this.ctx.strokeStyle = "blue";
+        /*
+            if文 base_canvasがobjectもしくは文字列
+        */
+
+
     }
 
     addViewer(obj) {
@@ -167,20 +153,25 @@ class Viewer {
 
     constructor() {
         this.img = new Image();
-        this.canvas = document.getElementById('trimming_image');
+        this.canvas = document.getElementById('trimming_canvas');
         this.ctx = this.canvas.getContext('2d');
     }
 
     update(clipperCtx, _startX, _startY, _endX, _endY) {
-        // this.img.src = '{% get_media_prefix %}/{{ field.value }}';
-        this.img.src = '{% get_media_prefix %}/{{ field.value }}';
-        console.log(clipperCtx.canvas.id);
+        const baseImageId = document.getElementById(clipperCtx.canvas.id);
+        console.log(baseImageId.nextElementSibling);
+        this.img.src = baseImageId.nextElementSibling.src;
+
+        console.log(this.img.src);
+
         this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
         this.ctx.drawImage(this.img, _startX, _startY, _endX - _startX, _endY - _startY, 0, 0, _endX - _startX, _endY - _startY);
     }
 }
 
-const clipper1 = new Clipper();
+const baseImage = document.getElementById('base_image');
+
+const clipper1 = new Clipper(baseImage.src);
 const viewer1 = new Viewer();
 
 clipper1.addViewer(viewer1);
@@ -234,14 +225,10 @@ clipper1.clipImage();
         endX = e.pageX - canvas.offsetLeft;
         endY = e.pageY - canvas.offsetTop;
 
-
-
         ctx.strokeStyle="blue";
         ctx.beginPath();
         ctx.clearRect(0, 0, 10000, 10000);
         ctx.strokeRect(startX, startY, endX - startX, endY - startY);
-
-
     }
 
     let removeHandler = () => {
