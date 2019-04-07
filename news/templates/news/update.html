@@ -26,6 +26,8 @@
                 {{ field }}
 
                 <script>
+
+/*
                     var obj1 = document.getElementById("id_image");
                        obj1.addEventListener("change", function(evt){
                           var file = evt.target.files;
@@ -42,6 +44,30 @@
                             document.getElementById("update_image").src = dataUrl;
                           }
                     },false);
+*/
+
+
+                    const baseImage = document.getElementById("id_image");
+                    baseImage.addEventListener("change", function(e){
+                        const file = e.target.files;
+                        const reader = new FileReader();
+
+                        //dataURL形式でファイルを読み込む
+                        reader.readAsDataURL(file[0]);
+
+                        //ファイルの読込が終了した時の処理
+                        reader.onload = function(){
+                            const dataUrl = reader.result;
+
+                            //読み込んだ画像とdataURLを書き出す
+                            document.getElementById("update_image").src = dataUrl;
+
+                            var test = document.getElementById("update_image").src;
+                        }
+                    },false);
+
+
+
                 </script>
 
 
@@ -73,84 +99,55 @@
 
 class Clipper {
 
-    constructor(_name) {
+    constructor() {
         this.startX;
         this.startY;
         this.endX;
         this.endY;
         this.viewerList = [];
+        this.canvas = document.getElementById('base_image');
+        this.ctx = this.canvas.getContext('2d');
+        this.ctx.strokeStyle = "blue";
     }
 
     addViewer(obj) {
         this.viewerList.push(obj);
     }
 
-    /*
-    deleteViewer() {
-        console.log(this.viewerList)
-    }
-    */
-
-    notifyViewers(_startX, _startY, _endX, _endY) {
-        console.log(this.viewerList);
-        let _name = this.name
+    notifyViewers(_ctx, _startX, _startY, _endX, _endY) {
         this.viewerList.map(function(element) {
-            element.update(_startX, _startY, _endX, _endY);
+            element.update(_ctx, _startX, _startY, _endX, _endY);
         });
     }
-/*
-    getClipperStatus() {
-        console.log(this.viewerList);
-    }
-*/
-
-
 
     clipImage() {
-
-        const canvas = this.setCanvas();
-
         document.addEventListener("mousedown", (e) => {
-            this.startX = this.getCoordinate(e.pageX, canvas.offsetLeft);
-            this.startY = this.getCoordinate(e.pageY, canvas.offsetTop);
+            console.log(this.canvas);
+            this.startX = this.getCoordinate(e.pageX, this.canvas.offsetLeft);
+            this.startY = this.getCoordinate(e.pageY, this.canvas.offsetTop);
             document.addEventListener("mousemove", keyMove);
         });
 
         document.addEventListener("mouseup", (e) => {
-            this.endX = this.getCoordinate(e.pageX, canvas.offsetLeft);
-            this.endY = this.getCoordinate(e.pageY, canvas.offsetTop);
-            console.log(this.endX, this.endY);
-            const ctx = this.setRectangle(canvas);
-            this.drawRectangle(ctx);
+            this.endX = this.getCoordinate(e.pageX, this.canvas.offsetLeft);
+            this.endY = this.getCoordinate(e.pageY, this.canvas.offsetTop);
+            this.drawRectangle(this.ctx);
             removeHandler();
-            this.notifyViewers(this.startX, this.startY, this.endX, this.endY);
+            this.notifyViewers(this.ctx, this.startX, this.startY, this.endX, this.endY);
         });
 
         const keyMove = (e) => {
-            this.endX = this.getCoordinate(e.pageX, canvas.offsetLeft);
-            this.endY = this.getCoordinate(e.pageY, canvas.offsetTop);
+            this.endX = this.getCoordinate(e.pageX, this.canvas.offsetLeft);
+            this.endY = this.getCoordinate(e.pageY, this.canvas.offsetTop);
             console.log(this.endX, this.endY);
-            const ctx = this.setRectangle(canvas);
-            this.clearRectangle(ctx);
-            this.drawRectangle(ctx);
+            this.clearRectangle(this.ctx);
+            this.drawRectangle(this.ctx);
         }
 
         const removeHandler = () => {
-          document.removeEventListener("mousemove", keyMove);
+            document.removeEventListener("mousemove", keyMove);
         }
 
-    }
-
-    setCanvas() {
-        const canvas = document.getElementById('base_image');
-        return canvas;
-    }
-
-    setRectangle(_canvas) {
-        const ctx = _canvas.getContext('2d');
-        ctx.strokeStyle = "blue";
-        ctx.beginPath();
-        return ctx;
     }
 
     getCoordinate(_coordinateVal, _offsetVal) {
@@ -162,28 +159,29 @@ class Clipper {
     }
 
     clearRectangle(_ctx) {
-        _ctx.clearRect(0, 0, baseImage.clientWidth, baseImage.clientHeight);
+        _ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     }
 }
 
 class Viewer {
-    constructor(_name) {
-        this.name = _name
+
+    constructor() {
+        this.img = new Image();
+        this.canvas = document.getElementById('trimming_image');
+        this.ctx = this.canvas.getContext('2d');
     }
 
-    update(_startX, _startY, _endX, _endY) {
-        console.log("*** startX:" + _startX + " ***");
-        console.log("*** startY:" + _startY + " ***");
-        console.log("*** endX:" + _endX + " ***");
-        console.log("*** endY:" + _endY + " ***");
+    update(clipperCtx, _startX, _startY, _endX, _endY) {
+        // this.img.src = '{% get_media_prefix %}/{{ field.value }}';
+        this.img.src = '{% get_media_prefix %}/{{ field.value }}';
+        console.log(clipperCtx.canvas.id);
+        this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+        this.ctx.drawImage(this.img, _startX, _startY, _endX - _startX, _endY - _startY, 0, 0, _endX - _startX, _endY - _startY);
     }
 }
 
-const baseImage = document.getElementById('base_image');
-
-
-let clipper1 = new Clipper('太郎1');
-let viewer1 = new Viewer('viewer1');
+const clipper1 = new Clipper();
+const viewer1 = new Viewer();
 
 clipper1.addViewer(viewer1);
 clipper1.clipImage();
