@@ -129,24 +129,17 @@ class Canvas {
     onFileLoaded(_self, e) {
         console.log(_self);
         const src_data = e.target.result;
-        var img = new Image();
-        var self = this
-
-
-/*
-        img.onload = this.onImageSetted;
+        const img = new Image();
+        img.onload = _self.onImageSetted.bind(null, _self);
         img.src = src_data;
         console.log(img.src);
-*/
     }
 
 
-    onImageSetted(e) {
-        console.log(876);
-/*
-        var data = createImageData(e.target);
+    onImageSetted(_self, e) {
+        console.log(_self);
+        var data = _self.createImageData(e.target);
         document.getElementById('test_canvas').getContext('2d').putImageData(data, 0, 0);
-*/
     }
 
 
