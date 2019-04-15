@@ -20,13 +20,12 @@
                 -->
 
                 <div style="position: relative;">
-                    <canvas id="base_canvas" width="1680" height="1050" style="position: relative; z-index: 1;"></canvas>
-                    <canvas id="test_canvas"></canvas>
+                    <canvas id="base_canvas" style="position: relative; z-index: 1;"></canvas>
                     <img style="display: none;" id="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
                 </div>
 
                 <div>
-                    <canvas id="trimming_canvas" width="1680" height="1050"></canvas>
+                    <canvas id="trimming_canvas"></canvas>
                 </div>
 
                 {{ field }}
@@ -90,34 +89,34 @@
 
 
 class Canvas {
-    constructor(_baseImageSrc) {
-        this.baseImageSrc = _baseImageSrc;
+    constructor(_baseCanvas, _baseImage) {
+        this.baseImage = _baseImage;
         this.canvas = document.getElementById('base_canvas');
         this.ctx = this.canvas.getContext('2d');
         this.changeImageBtn = document.getElementById("id_image");
+        this.baseCanvas = _baseCanvas
+    }
+
+    setCanvas() {
+        this.baseCanvas.setAttribute('width', this.baseImage.naturalWidth);
+        this.baseCanvas.setAttribute('height', this.baseImage.naturalHeight);
     }
 
     showImage() {
+        this.setCanvas();
         const ctx = this.ctx
         const img = new Image();
         const self = this;
 
-        img.src = this.baseImageSrc;
+        img.src = this.baseImage.src;
         this.ctx.drawImage(img, 0, 0);
 
         this.changeImageBtn.addEventListener("change", function(e){
             self.onFileSelected(this);
         },false);
-
-
-
-
     }
 
-
-
     onFileSelected(input) {
-        console.log(this);
         const self = this;
 
         const file = input.files[0];
@@ -127,7 +126,6 @@ class Canvas {
     }
 
     onFileLoaded(_self, e) {
-        console.log(_self);
         const src_data = e.target.result;
         const img = new Image();
         img.onload = _self.onImageSetted.bind(null, _self);
@@ -139,10 +137,8 @@ class Canvas {
     onImageSetted(_self, e) {
         console.log(_self);
         var data = _self.createImageData(e.target);
-        document.getElementById('test_canvas').getContext('2d').putImageData(data, 0, 0);
+        document.getElementById('base_canvas').getContext('2d').putImageData(data, 0, 0);
     }
-
-
 
     createImageData(img) {
         const cv = document.createElement('canvas');
@@ -153,7 +149,6 @@ class Canvas {
         const data = ct.getImageData(0, 0, cv.width, cv.height);
         return data;
     }
-
 }
 
 
@@ -246,8 +241,10 @@ class Viewer {
 }
 
 const baseImage = document.getElementById('base_image');
+const baseCanvas = document.getElementById('base_canvas');
 
-const canvas1 = new Canvas(baseImage.src);
+
+const canvas1 = new Canvas(baseCanvas,baseImage);
 const clipper1 = new Clipper(canvas1);
 const viewer1 = new Viewer();
 
