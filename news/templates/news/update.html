@@ -34,48 +34,6 @@
 
 
 
-/*
-                    var obj1 = document.getElementById("id_image");
-                       obj1.addEventListener("change", function(evt){
-                          var file = evt.target.files;
-                          var reader = new FileReader();
-
-                          //dataURL形式でファイルを読み込む
-                          reader.readAsDataURL(file[0]);
-
-                          //ファイルの読込が終了した時の処理
-                          reader.onload = function(){
-                            var dataUrl = reader.result;
-
-                            //読み込んだ画像とdataURLを書き出す
-                            document.getElementById("update_image").src = dataUrl;
-                          }
-                    },false);
-*/
-
-/*
-                    const changeImage = document.getElementById("id_image");
-                    changeImage.addEventListener("change", function(e){
-                        const file = e.target.files;
-                        const reader = new FileReader();
-
-
-                        //dataURL形式でファイルを読み込む
-                        reader.readAsDataURL(file[0]);
-
-
-                        //ファイルの読込が終了した時の処理
-                        reader.onload = function(){
-                            const dataUrl = reader.result;
-
-                            console.log(dataUrl);
-
-                            //読み込んだ画像とdataURLを書き出す
-                            document.getElementById("base_image").src = dataUrl;
-                        }
-                    },false);
-*/
-
 
                 </script>
 
@@ -83,10 +41,6 @@
 
 
 <script>
-
-
-
-
 
 class Canvas {
     constructor(_baseCanvas, _baseImage) {
@@ -118,7 +72,6 @@ class Canvas {
 
     onFileSelected(input) {
         const self = this;
-
         const file = input.files[0];
         const reader = new FileReader();
         reader.onload = this.onFileLoaded.bind(null, self);
@@ -126,28 +79,12 @@ class Canvas {
     }
 
     onFileLoaded(_self, e) {
-        const src_data = e.target.result;
         const img = new Image();
-        img.onload = _self.onImageSetted.bind(null, _self);
-        img.src = src_data;
-        console.log(img.src);
-    }
 
-
-    onImageSetted(_self, e) {
-        console.log(_self);
-        var data = _self.createImageData(e.target);
-        document.getElementById('base_canvas').getContext('2d').putImageData(data, 0, 0);
-    }
-
-    createImageData(img) {
-        const cv = document.createElement('canvas');
-        cv.width = img.naturalWidth;
-        cv.height = img.naturalHeight;
-        const ct = cv.getContext('2d');
-        ct.drawImage(img, 0, 0);
-        const data = ct.getImageData(0, 0, cv.width, cv.height);
-        return data;
+        img.onload = () => {
+            document.getElementById('base_canvas').getContext('2d').drawImage(img, 0, 0);
+        }
+        img.src = e.target.result;
     }
 }
 
