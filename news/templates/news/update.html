@@ -6,6 +6,60 @@
 
 
 <section>
+
+    <form class="slider_form" onsubmit="return false;">
+      <input type="text" name="slider" id="slider_position" value="0">
+      <div>
+        <div style="position: relative; width: 100px; height: 5px; margin: 0 auto; border: solid 1px #ccc; box-sizing: border-box;">
+            <input id="slider_btn" type="button" value="" style="position: absolute; top: 50%; left: 0; width: 10px; height: 10px; background: #f00; transform: translateY(-50%); cursor: pointer; outline: none; appearance: none; padding: 0;">
+        </div>
+      </div>
+    </form>
+
+    <script>
+        (function() {
+            const sliderBtn = document.getElementById('slider_btn');
+            let draggingFlg = false;
+            let defaultPosition = sliderBtn.getBoundingClientRect();
+
+            console.log(defaultPosition.left);
+
+            sliderBtn.addEventListener('click', function(e) {
+                draggingFlg = true;
+            }, false);
+
+
+
+            sliderBtn.addEventListener('mousedown', function(e) {
+                draggingFlg = true;
+                return false;
+            }, false);
+
+            sliderBtn.addEventListener('mouseup', function(e) {
+                draggingFlg = false;
+                return false;
+            }, false);
+
+            sliderBtn.addEventListener('mousemove', function(e) {
+
+
+
+                if(draggingFlg) {
+                    console.log((e.clientX - defaultPosition.left) - (sliderBtn.clientWidth / 2));
+                    console.log(e.clientX - defaultPosition.left);
+                    sliderBtn.style.left = ((e.clientX - defaultPosition.left) - (sliderBtn.clientWidth / 2)) + 'px'
+                }
+
+
+            }, false);
+
+
+
+
+
+        })();
+    </script>
+
     <form action="" method="post">
         {% csrf_token %}
 
@@ -29,19 +83,13 @@
                 </div>
 
                 {{ field }}
-
-                <script>
-
-
-
-
-                </script>
+        <script>
 
 
 
 
-<script>
 
+/*
 class Canvas {
     constructor(_baseCanvas, _baseImage) {
         this.baseImage = _baseImage;
@@ -82,9 +130,12 @@ class Canvas {
         const img = new Image();
 
         img.onload = () => {
+            _self.baseCanvas.setAttribute('width', img.naturalWidth);
+            _self.baseCanvas.setAttribute('height', img.naturalHeight);
             document.getElementById('base_canvas').getContext('2d').drawImage(img, 0, 0);
         }
         img.src = e.target.result;
+        console.log(img.naturalHeight);
     }
 }
 
@@ -137,7 +188,7 @@ class Clipper {
         const keyMove = (e) => {
             this.endX = this.getCoordinate(e.pageX, this.canvas.offsetLeft);
             this.endY = this.getCoordinate(e.pageY, this.canvas.offsetTop);
-            this.clearRectangle(this.ctx);
+            //this.clearRectangle(this.ctx);
             this.canvasArea.showImage();
             this.drawRectangle(this.ctx);
         }
@@ -145,7 +196,6 @@ class Clipper {
         const removeHandler = () => {
             document.removeEventListener("mousemove", keyMove);
         }
-
     }
 
     getCoordinate(_coordinateVal, _offsetVal) {
@@ -188,6 +238,8 @@ const viewer1 = new Viewer();
 canvas1.showImage();
 clipper1.addViewer(viewer1);
 clipper1.clipImage();
+
+*/
 
 </script>
 
