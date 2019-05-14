@@ -16,10 +16,13 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/pagination.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/tags.css' %}">
+  {% block css %}{% endblock %}
+
   {% block metadata %} {% endblock %}
 </head>
 
 <body>
+  {% include "menu.html" %}
   {% block content %}{% endblock %}
   {% include "footer.html" %}
   {% block script %}{% endblock %}

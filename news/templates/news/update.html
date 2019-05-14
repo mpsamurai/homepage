@@ -2,63 +2,15 @@
 
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'news/css/news_edit.css' %}">
+{% endblock %}
+
+
+
 {% block content %}
 
 
-<section>
-
-    <form class="slider_form" onsubmit="return false;">
-      <input type="text" name="slider" id="slider_position" value="0">
-      <div>
-        <div style="position: relative; width: 100px; height: 5px; margin: 0 auto; border: solid 1px #ccc; box-sizing: border-box;">
-            <input id="slider_btn" type="button" value="" style="position: absolute; top: 50%; left: 0; width: 10px; height: 10px; background: #f00; transform: translateY(-50%); cursor: pointer; outline: none; appearance: none; padding: 0;">
-        </div>
-      </div>
-    </form>
-
-    <script>
-        (function() {
-            const sliderBtn = document.getElementById('slider_btn');
-            let draggingFlg = false;
-            let defaultPosition = sliderBtn.getBoundingClientRect();
-
-            console.log(defaultPosition.left);
-
-            sliderBtn.addEventListener('click', function(e) {
-                draggingFlg = true;
-            }, false);
-
-
-
-            sliderBtn.addEventListener('mousedown', function(e) {
-                draggingFlg = true;
-                return false;
-            }, false);
-
-            sliderBtn.addEventListener('mouseup', function(e) {
-                draggingFlg = false;
-                return false;
-            }, false);
-
-            sliderBtn.addEventListener('mousemove', function(e) {
-
-
-
-                if(draggingFlg) {
-                    console.log((e.clientX - defaultPosition.left) - (sliderBtn.clientWidth / 2));
-                    console.log(e.clientX - defaultPosition.left);
-                    sliderBtn.style.left = ((e.clientX - defaultPosition.left) - (sliderBtn.clientWidth / 2)) + 'px'
-                }
-
-
-            }, false);
-
-
-
-
-
-        })();
-    </script>
 
     <form action="" method="post">
         {% csrf_token %}
@@ -66,15 +18,8 @@
         {% for field in form %}
             {% if field.html_name == 'image' %}
 
-                <!--
                 <div style="position: relative;">
-                    <canvas id="base_image" width="1680" height="1050" style="position: relative; z-index: 1;"></canvas>
-                    <img id="update_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
-                </div>
-                -->
-
-                <div style="position: relative;">
-                    <canvas id="base_canvas" style="position: relative; z-index: 1;"></canvas>
+                    <canvas id="canvas" style="position: relative; z-index: 1;"></canvas>
                     <img style="display: none;" id="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
                 </div>
 
@@ -83,184 +28,6 @@
                 </div>
 
                 {{ field }}
-        <script>
-
-
-
-
-
-/*
-class Canvas {
-    constructor(_baseCanvas, _baseImage) {
-        this.baseImage = _baseImage;
-        this.canvas = document.getElementById('base_canvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.changeImageBtn = document.getElementById("id_image");
-        this.baseCanvas = _baseCanvas
-    }
-
-    setCanvas() {
-        this.baseCanvas.setAttribute('width', this.baseImage.naturalWidth);
-        this.baseCanvas.setAttribute('height', this.baseImage.naturalHeight);
-    }
-
-    showImage() {
-        this.setCanvas();
-        const ctx = this.ctx
-        const img = new Image();
-        const self = this;
-
-        img.src = this.baseImage.src;
-        this.ctx.drawImage(img, 0, 0);
-
-        this.changeImageBtn.addEventListener("change", function(e){
-            self.onFileSelected(this);
-        },false);
-    }
-
-    onFileSelected(input) {
-        const self = this;
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = this.onFileLoaded.bind(null, self);
-        reader.readAsDataURL(file);
-    }
-
-    onFileLoaded(_self, e) {
-        const img = new Image();
-
-        img.onload = () => {
-            _self.baseCanvas.setAttribute('width', img.naturalWidth);
-            _self.baseCanvas.setAttribute('height', img.naturalHeight);
-            document.getElementById('base_canvas').getContext('2d').drawImage(img, 0, 0);
-        }
-        img.src = e.target.result;
-        console.log(img.naturalHeight);
-    }
-}
-
-
-class Clipper {
-
-    constructor(_canvasArea) {
-        this.canvasArea = _canvasArea;
-        this.startX;
-        this.startY;
-        this.endX;
-        this.endY;
-        this.viewerList = [];
-        this.canvas = document.getElementById('base_canvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.ctx.strokeStyle = "blue";
-
-        console.log(this.obj);
-        /*
-            if文 base_canvasがobjectもしくは文字列
-        */
-
-    }
-
-    addViewer(obj) {
-        this.viewerList.push(obj);
-    }
-
-    notifyViewers(_ctx, _startX, _startY, _endX, _endY) {
-        this.viewerList.map(function(element) {
-            element.update(_ctx, _startX, _startY, _endX, _endY);
-        });
-    }
-
-    clipImage() {
-        document.addEventListener("mousedown", (e) => {
-            this.startX = this.getCoordinate(e.pageX, this.canvas.offsetLeft);
-            this.startY = this.getCoordinate(e.pageY, this.canvas.offsetTop);
-            document.addEventListener("mousemove", keyMove);
-        });
-
-        document.addEventListener("mouseup", (e) => {
-            this.endX = this.getCoordinate(e.pageX, this.canvas.offsetLeft);
-            this.endY = this.getCoordinate(e.pageY, this.canvas.offsetTop);
-            this.drawRectangle(this.ctx);
-            removeHandler();
-            this.notifyViewers(this.ctx, this.startX, this.startY, this.endX, this.endY);
-        });
-
-        const keyMove = (e) => {
-            this.endX = this.getCoordinate(e.pageX, this.canvas.offsetLeft);
-            this.endY = this.getCoordinate(e.pageY, this.canvas.offsetTop);
-            //this.clearRectangle(this.ctx);
-            this.canvasArea.showImage();
-            this.drawRectangle(this.ctx);
-        }
-
-        const removeHandler = () => {
-            document.removeEventListener("mousemove", keyMove);
-        }
-    }
-
-    getCoordinate(_coordinateVal, _offsetVal) {
-        return _coordinateVal - _offsetVal;
-    };
-
-    drawRectangle(_ctx) {
-        _ctx.strokeRect(this.startX, this.startY, this.endX - this.startX, this.endY - this.startY);
-    }
-
-    clearRectangle(_ctx) {
-        _ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
-    }
-}
-
-class Viewer {
-
-    constructor() {
-        this.img = new Image();
-        this.canvas = document.getElementById('trimming_canvas');
-        this.ctx = this.canvas.getContext('2d');
-    }
-
-    update(clipperCtx, _startX, _startY, _endX, _endY) {
-        const baseImageId = document.getElementById(clipperCtx.canvas.id);
-        this.img.src = baseImageId.nextElementSibling.src;
-        this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
-        this.ctx.drawImage(this.img, _startX, _startY, _endX - _startX, _endY - _startY, 0, 0, _endX - _startX, _endY - _startY);
-    }
-}
-
-const baseImage = document.getElementById('base_image');
-const baseCanvas = document.getElementById('base_canvas');
-
-
-const canvas1 = new Canvas(baseCanvas,baseImage);
-const clipper1 = new Clipper(canvas1);
-const viewer1 = new Viewer();
-
-canvas1.showImage();
-clipper1.addViewer(viewer1);
-clipper1.clipImage();
-
-*/
-
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             {% elif field.html_name == 'thumbnail' %}
                 <img src="{% get_media_prefix %}/{{ field.value }}" alt="">
@@ -279,5 +46,10 @@ clipper1.clipImage();
         <button type="submit">Update</button>
     </form>
 </section>
+
+
 {% endblock %}
 
+{% block script %}
+<script type="text/javascript" src={% static 'js/news_edit.js' %}></script>
+{% endblock %}
