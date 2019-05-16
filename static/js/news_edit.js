@@ -1,11 +1,8 @@
 (function() {
     'use strict';
 
-
     class Canvas {
         constructor(_$canvas, _context) {
-
-
             this.$canvas = _$canvas;
             this.context = this.$canvas.getContext(_context);
         }
@@ -25,108 +22,39 @@
             offScreen.width = canvas.width;
             offScreen.height = canvas.height;
             const offScreenContext = offScreen.getContext('2d');
-
-
-
-
-
-
-
-
-
             offScreenContext.fillRect(0, 0, 30, 30);
-
-
-
-
             return offScreen;
         }
-
-
-
-
-
-
-
-
-
 
         drawRectangle() {
             const $canvas = document.getElementById('canvas');
             const context = $canvas.getContext('2d');
-
-
-            const moveRectangleSelected = () => {
-                    console.log(1234);
-            }
-
-            const removeRectangleSelected = () => {
-            console.log(7890);
-                document.removeEventListener('mousemove', moveRectangleSelected);
-            }
-
-
-
-            document.addEventListener('mousedown', () => {
-                console.log(1234);
-
-                document.addEventListener('mousemove', moveRectangleSelected);
-
-
-            });
-
-
-            document.addEventListener('mouseup', () => {
-
-                console.log(5678);
-
-
-                removeRectangleSelected();
-
-
-            });
-
-
-
-/*
-            this.startRectangleSelected($canvas, test);
-            this.endRectangleSelected($canvas, test);
-*/
-
-
+            this.startRectangleSelected();
+            this.endRectangleSelected();
             context.drawImage(this.createRectangleByOffScreen(), 0, 0);
         }
 
         startRectangleSelected(canvas, func) {
-                console.log(func);
-
             document.addEventListener('mousedown', () => {
-                console.log(func);
-                func(canvas);
+                console.log(1234);
+                document.addEventListener('mousemove', this.moveRectangleSelected);
             });
         }
 
         endRectangleSelected(canvas, func) {
             document.addEventListener('mouseup', () => {
-
                 console.log(1234);
-
-
-                document.removeEventListener('mousemove', func, false);
-
-
+                document.removeEventListener('mousemove', this.moveRectangleSelected);
             });
         }
 
         moveRectangleSelected(canvas) {
-            document.addEventListener('mousemove', () => {
-                console.log(1234);
-            });
+            console.log(1234);
         }
 
         removeRectangleSelected(canvas, func) {
             console.log('remove');
-            document.removeEventListener('mousemove', func);
+            document.removeEventListener('mousemove', this.moveRectangleSelected);
         }
 
 
