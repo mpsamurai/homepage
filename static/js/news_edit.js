@@ -6,17 +6,36 @@
     menuElement[0].style.position = 'static';
 
     class Canvas {
-        constructor(_canvasElement, _offScreenCanvasElement) {
+        constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context) {
             this.canvasElement = _canvasElement;
             this.offScreenCanvasElement = _offScreenCanvasElement;
+            this.canvasContext = _canvasElement.getContext(context);
+            this.offScreenCanvasContext = _offScreenCanvasElement.getContext(context);
+            this.baseImageElement = _baseImageElement;
+        }
+
+        drawImage() {
+            const image = new Image();
+
+            image.onload = function() {
+                const width = image.naturalWidth;
+                const height = image.naturalHeight;
+            }
+
+            image.src = this.baseImageElement.src;
+
+            this.canvasElement.setAttribute('width', image.width);
+            this.canvasElement.setAttribute('height', image.height);
+            this.offScreenCanvasElement.setAttribute('width', image.width);
+            this.offScreenCanvasElement.setAttribute('height', image.height);
+
+            this.canvasContext.drawImage(image, 0, 0);
         }
     }
 
     class RectangleSelection {
         constructor(_canvas, context) {
             this.canvas = _canvas;
-            this.canvasContext = _canvas.canvasElement.getContext(context);
-            this.offScreenCanvasContext = _canvas.offScreenCanvasElement.getContext(context);
             this.canvasElementPosition = this.canvas.canvasElement.getBoundingClientRect();
             this.elementXCoordinate = this.canvasElementPosition.left + window.pageXOffset;
             this.elementYCoordinate = this.canvasElementPosition.top + window.pageYOffset;
@@ -55,13 +74,14 @@
             _this.xCurrentPoint = _this.judgeRectangleSelectionMaximumSizeOfX(_this.xCurrentPoint, _this.canvasWidth, _this.elementXCoordinate);
             _this.yCurrentPoint = _this.judgeRectangleSelectionMaximumSizeOfY(_this.yCurrentPoint, _this.canvasHeight + _this.elementYCoordinate, _this.elementYCoordinate);
 
-            _this.canvasContext.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
-            _this.offScreenCanvasContext.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
-            _this.canvasContext.drawImage(_this.createRectangleByOffScreen(_this.xStartingPoint, _this.yStartingPoint, _this.xCurrentPoint, _this.yCurrentPoint), 0, 0);
+            _this.canvas.canvasContext.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
+            _this.canvas.offScreenCanvasContext.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
+            _this.canvas.drawImage();
+            _this.canvas.canvasContext.drawImage(_this.createRectangleByOffScreen(_this.xStartingPoint, _this.yStartingPoint, _this.xCurrentPoint, _this.yCurrentPoint), 0, 0);
         }
 
         createRectangleByOffScreen(xStartingPoint, yStartingPoint, xCurrentPoint, yCurrentPoint) {
-            this.offScreenCanvasContext.strokeRect(xStartingPoint, yStartingPoint - this.elementYCoordinate, xCurrentPoint - xStartingPoint, yCurrentPoint - yStartingPoint);
+            this.canvas.offScreenCanvasContext.strokeRect(xStartingPoint, yStartingPoint - this.elementYCoordinate, xCurrentPoint - xStartingPoint, yCurrentPoint - yStartingPoint);
             return this.canvas.offScreenCanvasElement;
         }
 
@@ -86,14 +106,9 @@
         }
     }
 
-    class Image {
-
-    }
-
     class ImageSelection {
 
     }
-
 
     class Notification {
 
@@ -101,12 +116,11 @@
 
     const canvasElement = document.getElementById('canvas');
     const offScreenCanvasElement = document.createElement('canvas');
-
-    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement);
+    const baseImageElement = document.getElementById('base_image');
+    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d');
+    canvas1.drawImage();
 
     const rectangleSelection1 = new RectangleSelection(canvas1, '2d');
     rectangleSelection1.drawRectangle();
-
-
 
 })();
