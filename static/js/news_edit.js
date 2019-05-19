@@ -1,130 +1,89 @@
 (function() {
     'use strict';
 
+    const menuElement = document.getElementsByClassName('menu');
+    console.log(menuElement[0]);
+    menuElement[0].style.position = 'static';
+
     class Canvas {
-        constructor(_$canvas, _context) {
-            this.$canvas = _$canvas;
-            this.context = this.$canvas.getContext(_context);
+        constructor(_canvasElement, _offScreenCanvasElement) {
+            this.canvasElement = _canvasElement;
+            this.offScreenCanvasElement = _offScreenCanvasElement;
         }
     }
 
     class RectangleSelection {
-        constructor(_canvas) {
+        constructor(_canvas, context) {
             this.canvas = _canvas;
+            this.canvasContext = _canvas.canvasElement.getContext(context);
+            this.offScreenCanvasContext = _canvas.offScreenCanvasElement.getContext(context);
+            this.canvasElementPosition = this.canvas.canvasElement.getBoundingClientRect();
+            this.elementXCoordinate = this.canvasElementPosition.left + window.pageXOffset;
+            this.elementYCoordinate = this.canvasElementPosition.top + window.pageYOffset;
+            this.canvasWidth = _canvas.canvasElement.clientWidth;
+            this.canvasHeight = _canvas.canvasElement.clientHeight;
             this.xStartingPoint;
             this.yStartingPoint;
-            this.xEndPoint;
-            this.yEndPoint;
-        }
-
-        createRectangleByOffScreen() {
-            const offScreen = document.createElement('canvas');
-            offScreen.width = canvas.width;
-            offScreen.height = canvas.height;
-            const offScreenContext = offScreen.getContext('2d');
-            offScreenContext.fillRect(0, 0, 30, 30);
-            return offScreen;
+            this.xCurrentPoint;
+            this.yCurrentPoint;
         }
 
         drawRectangle() {
-            const $canvas = document.getElementById('canvas');
-            const context = $canvas.getContext('2d');
-            this.startRectangleSelected();
-            this.endRectangleSelected();
-            context.drawImage(this.createRectangleByOffScreen(), 0, 0);
+            const valAdjustRectangleSelectionSize = this.adjustRectangleSelectionSize.bind(null, this);
+            this.startRectangleSelected(valAdjustRectangleSelectionSize);
+            this.endRectangleSelected(valAdjustRectangleSelectionSize);
         }
 
-        startRectangleSelected(canvas, func) {
-            document.addEventListener('mousedown', () => {
-                console.log(1234);
-                document.addEventListener('mousemove', this.moveRectangleSelected);
+        startRectangleSelected(valAdjustRectangleSelectionSize) {
+            document.addEventListener('mousedown', (e) => {
+                this.xStartingPoint = e.pageX - this.canvas.canvasElement.offsetLeft;
+                this.yStartingPoint = e.pageY - this.canvas.canvasElement.offsetTop;
+                document.addEventListener('mousemove', valAdjustRectangleSelectionSize);
             });
         }
 
-        endRectangleSelected(canvas, func) {
-            document.addEventListener('mouseup', () => {
-                console.log(1234);
-                document.removeEventListener('mousemove', this.moveRectangleSelected);
+        endRectangleSelected(valAdjustRectangleSelectionSize) {
+            document.addEventListener('mouseup', (e) => {
+                document.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
             });
         }
 
-        moveRectangleSelected(canvas) {
-            console.log(1234);
+        adjustRectangleSelectionSize(_this, e) {
+            _this.xCurrentPoint = e.pageX - _this.canvas.canvasElement.offsetLeft;
+            _this.yCurrentPoint = e.pageY - _this.canvas.canvasElement.offsetTop;
+
+            _this.xCurrentPoint = _this.judgeRectangleSelectionMaximumSizeOfX(_this.xCurrentPoint, _this.canvasWidth, _this.elementXCoordinate);
+            _this.yCurrentPoint = _this.judgeRectangleSelectionMaximumSizeOfY(_this.yCurrentPoint, _this.canvasHeight + _this.elementYCoordinate, _this.elementYCoordinate);
+
+            _this.canvasContext.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
+            _this.offScreenCanvasContext.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
+            _this.canvasContext.drawImage(_this.createRectangleByOffScreen(_this.xStartingPoint, _this.yStartingPoint, _this.xCurrentPoint, _this.yCurrentPoint), 0, 0);
         }
 
-        removeRectangleSelected(canvas, func) {
-            console.log('remove');
-            document.removeEventListener('mousemove', this.moveRectangleSelected);
+        createRectangleByOffScreen(xStartingPoint, yStartingPoint, xCurrentPoint, yCurrentPoint) {
+            this.offScreenCanvasContext.strokeRect(xStartingPoint, yStartingPoint - this.elementYCoordinate, xCurrentPoint - xStartingPoint, yCurrentPoint - yStartingPoint);
+            return this.canvas.offScreenCanvasElement;
         }
 
-
-
-
-
-
-
-
-
-
-/*
-        createCanvasForDrawing() {
-            var mycanvas = document.createElement('canvas');
-            var mycontext = mycanvas.getContext('2d');
-
-            mycontext.fillRect(20, 20, 80, 40);
-
-            console.log(this.canvas.context);
-            this.selectImageRectangle();
-        }
-
-        selectImageRectangle() {
-            this.canvas.context.fillRect(20, 20, 80, 40);
-        }
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-        selectImageRectangle() {
-
-            const keyMove = (_self) => {
-                document.addEventListener("mousemove", (e) => {
-                    console.log(1234);
-                });
+        judgeRectangleSelectionMaximumSizeOfX(currentPoint, maximumSize, minimumSize) {
+            if(currentPoint >= maximumSize) {
+                return maximumSize - 1;
+            } else if(currentPoint <= minimumSize) {
+                return 1;
+            } else {
+                return currentPoint;
             }
-
-            const removeHandler = () => {
-                document.removeEventListener("mousemove", keyMove);
-            }
-
-            document.addEventListener("mousedown", (e) => {
-                this.xStartingPoint = e.clientX - canvas.offsetLeft;
-                this.yStartingPoint = e.clientY - canvas.offsetTop;
-                keyMove(this);
-            });
-
-            document.addEventListener("mousemove", (e) => {
-                this.xStartingPoint = e.clientX - canvas.offsetLeft;
-                this.yStartingPoint = e.clientY - canvas.offsetTop;
-            });
-
-            document.addEventListener("mouseup", (e) => {
-                this.xStartingPoint = e.clientX - canvas.offsetLeft;
-                this.yStartingPoint = e.clientY - canvas.offsetTop;
-                removeHandler();
-            });
         }
-*/
 
+        judgeRectangleSelectionMaximumSizeOfY(currentPoint, maximumSize, minimumSize) {
+            if(currentPoint >= maximumSize) {
+                return maximumSize - 1;
+            } else if(currentPoint <= this.elementYCoordinate) {
+                return this.elementYCoordinate + 1;
+            } else {
+                return currentPoint;
+            }
+        }
     }
 
     class Image {
@@ -140,10 +99,12 @@
 
     }
 
-    const $canvas = document.getElementById('canvas');
-    const canvas1 = new Canvas($canvas, '2d');
+    const canvasElement = document.getElementById('canvas');
+    const offScreenCanvasElement = document.createElement('canvas');
 
-    const rectangleSelection1 = new RectangleSelection(canvas1);
+    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement);
+
+    const rectangleSelection1 = new RectangleSelection(canvas1, '2d');
     rectangleSelection1.drawRectangle();
 
 
