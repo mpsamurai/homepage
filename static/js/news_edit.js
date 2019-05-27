@@ -6,24 +6,48 @@
     menuElement[0].style.position = 'static';
 
     class Canvas {
-        constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context) {
+        constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context, _canvasImage) {
             this.canvasElement = _canvasElement;
             this.canvasWidth;
             this.canvasHeight;
             this.offScreenCanvasElement = _offScreenCanvasElement;
             this.canvasContext = _canvasElement.getContext(context);
             this.offScreenCanvasContext = _offScreenCanvasElement.getContext(context);
-            this.baseImageElement = _baseImageElement;
-            this.setImage();
+            this.canvasImage = _canvasImage;
+            this.initialize();
         }
 
-        setImage() {
-            const image = new Image();
+        initialize() {
+            this.canvasImage.image = this.canvasImage.baseImageElement;
+            this.canvasImage.setImage(this.canvasContext);
+        }
 
-            image.onload = function() {
-                const width = image.naturalWidth;
-                const height = image.naturalHeight;
-            }
+/*
+        setCanvasWidth(image) {
+            this.canvasElement.setAttribute('width', image.width);
+            this.offScreenCanvasElement.setAttribute('width', image.width);
+        }
+
+        setCanvasHeight(image) {
+            this.canvasElement.setAttribute('height', image.height);
+            this.offScreenCanvasElement.setAttribute('height', image.height);
+        }
+*/
+    }
+
+    class CanvasImage {
+        constructor(_image, _baseImageElement) {
+            this.image = _image;
+            this.baseImageElement = _baseImageElement;
+        }
+
+        setImage(canvasContext) {
+            canvasContext.drawImage(this.image, 0, 0);
+
+
+/*
+            const image = new Image();
+            image.onload = () => {
 
             image.src = this.baseImageElement.src;
 
@@ -35,20 +59,32 @@
 
 
             this.canvasContext.drawImage(image, 0, 0);
+*/
         }
 
-        setCanvasWidth(image) {
-            this.canvasElement.setAttribute('width', image.width);
-            this.offScreenCanvasElement.setAttribute('width', image.width);
-        }
 
-        setCanvasHeight(image) {
-            this.canvasElement.setAttribute('height', image.height);
-            this.offScreenCanvasElement.setAttribute('height', image.height);
-        }
 
     }
 
+    const canvasElement = document.getElementById('canvas');
+    const offScreenCanvasElement = document.createElement('canvas');
+    const baseImageElement = document.getElementById('base_image');
+    const idImageElement = document.getElementById('id_image');
+    const image = new Image();
+    const canvasImage1 = new CanvasImage(image, baseImageElement);
+    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d', canvasImage1);
+/*
+    const rectangleSelection1 = new RectangleSelection(canvas1, '2d');
+    rectangleSelection1.drawRectangle();
+
+    const imageSelection1 = new ImageSelection(canvas1, idImageElement);
+
+
+    imageSelection1.switchImage();
+*/
+
+
+/*
     class RectangleSelection {
         constructor(_canvas, context) {
             this.canvas = _canvas;
@@ -167,8 +203,6 @@
 
 
 
-
-/*
         switchImage() {
 
             const image = new Image();
@@ -215,27 +249,14 @@
             img.src = e.target.result;
             console.log(img.naturalHeight);
         }
-*/
 
     }
+*/
 
     class Notification {
 
     }
 
-    const canvasElement = document.getElementById('canvas');
-    const offScreenCanvasElement = document.createElement('canvas');
-    const baseImageElement = document.getElementById('base_image');
-    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d');
-    const idImageElement = document.getElementById('id_image');
-
-    const rectangleSelection1 = new RectangleSelection(canvas1, '2d');
-    rectangleSelection1.drawRectangle();
-
-    const imageSelection1 = new ImageSelection(canvas1, idImageElement);
-
-
-    imageSelection1.switchImage();
 
 
 /*
