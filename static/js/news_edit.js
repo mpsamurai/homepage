@@ -1,25 +1,29 @@
+window.onload = function() {
+
+};
+
+
+
 (function() {
     'use strict';
 
     const menuElement = document.getElementsByClassName('menu');
-    console.log(menuElement[0]);
     menuElement[0].style.position = 'static';
 
     class Canvas {
-        constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context, _canvasImage) {
+        constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context) {
             this.canvasElement = _canvasElement;
             this.canvasWidth;
             this.canvasHeight;
             this.offScreenCanvasElement = _offScreenCanvasElement;
             this.canvasContext = _canvasElement.getContext(context);
             this.offScreenCanvasContext = _offScreenCanvasElement.getContext(context);
-            this.canvasImage = _canvasImage;
-            this.initialize();
         }
 
         initialize() {
+            const self = this;
             this.canvasImage.image = this.canvasImage.baseImageElement;
-            this.canvasImage.setImage(this.canvasContext);
+            this.canvasImage.setImage(this.canvasContext, this.canvasImage.image, self);
         }
 
 /*
@@ -36,13 +40,23 @@
     }
 
     class CanvasImage {
-        constructor(_image, _baseImageElement) {
+        constructor(_image, _baseImageElement, _canvas) {
+            const self = this;
             this.image = _image;
             this.baseImageElement = _baseImageElement;
+            this.image.src = this.baseImageElement.src;
+            this.canvas = _canvas;
+            this.image.addEventListener('load', function() {
+                self.setImage();
+            });
+
         }
 
-        setImage(canvasContext) {
-            canvasContext.drawImage(this.image, 0, 0);
+        initialize() {
+        }
+
+        setImage() {
+            this.canvas.canvasContext.drawImage(this.image, 0, 0);
 
 
 /*
@@ -71,8 +85,8 @@
     const baseImageElement = document.getElementById('base_image');
     const idImageElement = document.getElementById('id_image');
     const image = new Image();
-    const canvasImage1 = new CanvasImage(image, baseImageElement);
-    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d', canvasImage1);
+    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d');
+    const canvasImage1 = new CanvasImage(image, baseImageElement, canvas1);
 /*
     const rectangleSelection1 = new RectangleSelection(canvas1, '2d');
     rectangleSelection1.drawRectangle();
