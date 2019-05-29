@@ -26,7 +26,6 @@ window.onload = function() {
             this.canvasImage.setImage(this.canvasContext, this.canvasImage.image, self);
         }
 
-/*
         setCanvasWidth(image) {
             this.canvasElement.setAttribute('width', image.width);
             this.offScreenCanvasElement.setAttribute('width', image.width);
@@ -36,7 +35,6 @@ window.onload = function() {
             this.canvasElement.setAttribute('height', image.height);
             this.offScreenCanvasElement.setAttribute('height', image.height);
         }
-*/
     }
 
     class CanvasImage {
@@ -47,12 +45,14 @@ window.onload = function() {
             this.image.src = this.baseImageElement.src;
             this.canvas = _canvas;
             this.image.addEventListener('load', function() {
-                self.setImage();
+                self.initialize();
             });
-
         }
 
         initialize() {
+            this.canvas.setCanvasWidth(this.image);
+            this.canvas.setCanvasHeight(this.image);
+            this.setImage();
         }
 
         setImage() {
