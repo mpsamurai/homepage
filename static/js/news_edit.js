@@ -57,77 +57,204 @@ window.onload = function() {
 */
 
 
-const Canvas = (() => {
-   const private_ = {
-      value: Symbol('value'),
-      value: Symbol('canvasElement'),
-   };
+    const Canvas = (() => {
+       const private_ = {
+          canvasElement: Symbol('canvasElement'),
+          canvasWidth: Symbol('canvasWidth'),
+          canvasHeight: Symbol('canvasHeight'),
+          offScreenCanvasElement: Symbol('offScreenCanvasElement'),
+          canvasContext: Symbol('canvasContext'),
+          offScreenCanvasContext: Symbol('offScreenCanvasContext'),
+       };
 
+       return class {
+            constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context) {
+                this[private_.canvasElement] = _canvasElement;
+                this[private_.canvasWidth];
+                this[private_.canvasHeight];
+                this[private_.offScreenCanvasElement] = _offScreenCanvasElement;
+                this[private_.canvasContext] = _canvasElement.getContext(context);
+                this[private_.offScreenCanvasContext] = _offScreenCanvasElement.getContext(context);
+            }
 
-   return class {
+            setCanvasElementWidth() {
+                this[private_.canvasElement].setAttribute("width", this[private_.canvasWidth]);
+            }
 
-        constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context) {
+            setCanvasElementHeight() {
+                this[private_.canvasElement].setAttribute("height", this[private_.canvasHeight]);
+            }
 
+            set canvasElement(_canvasElement) {
+                this[private_.canvasElement] = _canvasElement;
+            }
 
+            get canvasElement() {
+                return this[private_.canvasElement];
+            }
 
-            this[private_.value] = 'no value';
-            this[private_.canvasElement] = _canvasElement;
+            set canvasWidth(_canvasWidth) {
+                this[private_.canvasWidth] = _canvasWidth;
+            }
 
+            get canvasWidth() {
+                return this[private_.canvasWidth];
+            }
+
+            set canvasHeight(_canvasHeight) {
+                this[private_.canvasHeight] = _canvasHeight;
+            }
+
+            get canvasHeight() {
+                return this[private_.canvasHeight];
+            }
+
+            set offScreenCanvasElement(_offScreenCanvasElement) {
+                this[private_.offScreenCanvasElement] = _offScreenCanvasElement;
+            }
+
+            get offScreenCanvasElement() {
+                return this[private_.offScreenCanvasElement];
+            }
+
+            set canvasContext(_canvasContext) {
+                this[private_.canvasContext] = _canvasContext;
+            }
+
+            get canvasContext() {
+                return this[private_.canvasContext];
+            }
+
+            set offScreenCanvasContext(_offScreenCanvasContext) {
+                this[private_.offScreenCanvasContext] = _offScreenCanvasContext;
+            }
+
+            get offScreenCanvasContext() {
+                return this[private_.offScreenCanvasContext];
+            }
+       };
+    })();
+
+    const CanvasImage = (() => {
+       const private_ = {
+          image: Symbol('image'),
+          baseImageElement: Symbol('baseImageElement'),
+          canvas: Symbol('canvas'),
+       };
+
+       return class {
+            constructor(_image, _baseImageElement, _canvas) {
+                const self = this;
+                this[private_.image] = _image;
+                this[private_.baseImageElement] = _baseImageElement;
+                this[private_.image].src = this[private_.baseImageElement].src;
+                this[private_.canvas] = _canvas;
+                this[private_.image].addEventListener('load', function() {
+                    self.initialize();
+                });
+            }
+
+            initialize() {
+                this[private_.canvas].canvasWidth = this[private_.baseImageElement].width;
+                this[private_.canvas].canvasHeight = this[private_.baseImageElement].height;
+                this[private_.canvas].setCanvasElementWidth();
+                this[private_.canvas].setCanvasElementHeight();
+                this.setImage();
+            }
+
+            setImage() {
+                this[private_.canvas].canvasContext.drawImage(this[private_.image], 0, 0);
+            }
+
+            set image(_image) {
+                this[private_.image] = _image;
+            }
+
+            get image() {
+                return this[private_.image];
+            }
+
+            set baseImageElement(_baseImageElement) {
+                this[private_.baseImageElement] = _baseImageElement;
+            }
+
+            get baseImageElement() {
+                return this[private_.baseImageElement];
+            }
+
+            set canvas(_canvas) {
+                this[private_.canvas] = _canvas;
+            }
+
+            get canvas() {
+                return this[private_.canvas];
+            }
+       };
+    })();
+
+    const ImageSelection = (() => {
+        const private_ = {
+            idImageElement: Symbol('idImageElement'),
+            canvas: Symbol('canvas'),
+        }
+
+        return class {
+            constructor(_idImageElement, _canvas) {
+                const self = this;
+                this[private_.idImageElement] = _idImageElement;
+                this[private_.canvas] = _canvas;
+
+                this[private_.idImageElement].addEventListener("change", function(e){
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        self.switchImage(e.target.result, self);
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                },false);
+            }
+
+            switchImage(data, self) {
+
+                const image = new Image();
+
+                image.onload = function() {
+                    self[private_.canvas].canvasContext.clearRect(0, 0, image.width, image.height);
+                    self[private_.canvas].canvasContext.drawImage(image, 0, 0);
+                }
+                image.src = data;
+                console.log(this[private_.canvas].width);
+            }
+
+            set idImageElement(_idImageElement) {
+                this[private_.idImageElement] = _idImageElement;
+            }
+
+            get idImageElement() {
+                return this[private_.idImageElement];
+            }
+
+            set canvas(_canvas) {
+                this[private_.canvas] = _canvas;
+            }
+
+            get canvas() {
+                return this[private_.canvas];
+            }
+        }
+    })();
+
+    const canvasElement = document.getElementById('canvas');
+    const offScreenCanvasElement = document.createElement('canvas');
+    const baseImageElement = document.getElementById('base_image');
+    const idImageElement = document.getElementById('id_image');
+    const image = new Image();
+    const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d');
+
+    const canvasImage1 = new CanvasImage(image, baseImageElement, canvas1);
+    const imageSelection1 = new ImageSelection(idImageElement, canvas1);
 
 
 /*
-            this.canvasElement = _canvasElement;
-*/
-            this._canvasWidth;
-            this._canvasHeight;
-            this.offScreenCanvasElement = _offScreenCanvasElement;
-            this.canvasContext = _canvasElement.getContext(context);
-            this.offScreenCanvasContext = _offScreenCanvasElement.getContext(context);
-        }
-
-
-
-        set canvasElement(_canvasElement) {
-            this[private_.canvasWidth] = _canvasWidth;
-        }
-
-        get _canvasWidth() {
-            this[private_.canvasWidth];
-        }
-
-
-
-      get value() {
-         return this[private_.value];
-      }
-      set value(x) {
-         this[private_.value] = 'value: ' + x;
-      }
-
-
-
-        set _canvasWidth(_canvasWidth) {
-            this.canvasWidth = _canvasWidth;
-        }
-
-        get _canvasWidth() {
-            return this.canvasWidth;
-        }
-
-        initialize() {
-            const self = this;
-            this.canvasImage.image = this.canvasImage.baseImageElement;
-            this.canvasImage.setImage(this.canvasContext, this.canvasImage.image, self);
-        }
-
-        walk() {
-            console.log(this.canvasWidth + 'が歩いてます');
-        }
-   };
-})();
-
-
-
     class CanvasImage {
         constructor(_image, _baseImageElement, _canvas) {
             const self = this;
@@ -142,10 +269,8 @@ const Canvas = (() => {
 
         initialize() {
             console.log(1234);
-/*
             this.canvas.setCanvasWidth(this.image);
             this.canvas.setCanvasHeight(this.image);
-*/
             this.setImage();
         }
 
@@ -153,7 +278,6 @@ const Canvas = (() => {
             this.canvas.canvasContext.drawImage(this.image, 0, 0);
         }
     }
-
     class ImageSelection {
         constructor(_idImageElement, _canvas) {
             const self = this;
@@ -190,10 +314,8 @@ const Canvas = (() => {
 
 
 
-/*
             image.src = this.canvas.baseImageElement.src;
             this.canvas.canvasContext.drawImage(image, 0, 0);
-*/
 
 
         }
@@ -204,7 +326,6 @@ const Canvas = (() => {
 
 
 
-/*
         selectedFile(input) {
             const self = this;
             const file = input.files[0];
@@ -227,9 +348,10 @@ const Canvas = (() => {
                 _self.canvas.canvasContext.drawImage(image, 0, 0);
             }
         }
-*/
 
     }
+*/
+/*
 
     const canvasElement = document.getElementById('canvas');
     const offScreenCanvasElement = document.createElement('canvas');
@@ -237,10 +359,10 @@ const Canvas = (() => {
     const idImageElement = document.getElementById('id_image');
     const image = new Image();
     const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d');
+
     const canvasImage1 = new CanvasImage(image, baseImageElement, canvas1);
     const imageSelection1 = new ImageSelection(idImageElement, canvas1);
-
-canvas1.walk();
+*/
 
 /*
     const rectangleSelection1 = new RectangleSelection(canvas1, '2d');
