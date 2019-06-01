@@ -8,66 +8,17 @@ window.onload = function() {
     const menuElement = document.getElementsByClassName('menu');
     menuElement[0].style.position = 'static';
 
-/*
-    class Canvas {
-        constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context) {
-            this.canvasElement = _canvasElement;
-            this._canvasWidth;
-            this._canvasHeight;
-            this.offScreenCanvasElement = _offScreenCanvasElement;
-            this.canvasContext = _canvasElement.getContext(context);
-            this.offScreenCanvasContext = _offScreenCanvasElement.getContext(context);
-        }
-
-        set _canvasWidth(_canvasWidth) {
-            this.canvasWidth = _canvasWidth;
-        }
-
-        get _canvasWidth() {
-            return this.canvasWidth;
-        }
-
-        initialize() {
-            const self = this;
-            this.canvasImage.image = this.canvasImage.baseImageElement;
-            this.canvasImage.setImage(this.canvasContext, this.canvasImage.image, self);
-        }
-
-
-        walk() {
-            console.log(this.canvasWidth + 'が歩いてます');
-        }
-
-
-
-
-
-
-
-        setCanvasWidth(image) {
-            this.canvasElement.setAttribute('width', image.width);
-            this.offScreenCanvasElement.setAttribute('width', image.width);
-        }
-
-        setCanvasHeight(image) {
-            this.canvasElement.setAttribute('height', image.height);
-            this.offScreenCanvasElement.setAttribute('height', image.height);
-        }
-    }
-*/
-
-
     const Canvas = (() => {
-       const private_ = {
-          canvasElement: Symbol('canvasElement'),
-          canvasWidth: Symbol('canvasWidth'),
-          canvasHeight: Symbol('canvasHeight'),
-          offScreenCanvasElement: Symbol('offScreenCanvasElement'),
-          canvasContext: Symbol('canvasContext'),
-          offScreenCanvasContext: Symbol('offScreenCanvasContext'),
-       };
+        const private_ = {
+            canvasElement: Symbol('canvasElement'),
+            canvasWidth: Symbol('canvasWidth'),
+            canvasHeight: Symbol('canvasHeight'),
+            offScreenCanvasElement: Symbol('offScreenCanvasElement'),
+            canvasContext: Symbol('canvasContext'),
+            offScreenCanvasContext: Symbol('offScreenCanvasContext'),
+        };
 
-       return class {
+        return class {
             constructor(_canvasElement, _offScreenCanvasElement, _baseImageElement, context) {
                 this[private_.canvasElement] = _canvasElement;
                 this[private_.canvasWidth];
@@ -75,6 +26,10 @@ window.onload = function() {
                 this[private_.offScreenCanvasElement] = _offScreenCanvasElement;
                 this[private_.canvasContext] = _canvasElement.getContext(context);
                 this[private_.offScreenCanvasContext] = _offScreenCanvasElement.getContext(context);
+            }
+
+            makeCanvasClean() {
+                this[private_.canvasContext].clearRect(0, 0, this[private_.canvasWidth], this[private_.canvasHeight]);
             }
 
             setCanvasElementWidth() {
@@ -132,17 +87,17 @@ window.onload = function() {
             get offScreenCanvasContext() {
                 return this[private_.offScreenCanvasContext];
             }
-       };
+        };
     })();
 
     const CanvasImage = (() => {
-       const private_ = {
-          image: Symbol('image'),
-          baseImageElement: Symbol('baseImageElement'),
-          canvas: Symbol('canvas'),
-       };
+        const private_ = {
+            image: Symbol('image'),
+            baseImageElement: Symbol('baseImageElement'),
+            canvas: Symbol('canvas'),
+        };
 
-       return class {
+        return class {
             constructor(_image, _baseImageElement, _canvas) {
                 const self = this;
                 this[private_.image] = _image;
@@ -150,20 +105,21 @@ window.onload = function() {
                 this[private_.image].src = this[private_.baseImageElement].src;
                 this[private_.canvas] = _canvas;
                 this[private_.image].addEventListener('load', function() {
-                    self.initialize();
+                    self.initialize(self[private_.image]);
                 });
             }
 
-            initialize() {
-                this[private_.canvas].canvasWidth = this[private_.baseImageElement].width;
-                this[private_.canvas].canvasHeight = this[private_.baseImageElement].height;
-                this[private_.canvas].setCanvasElementWidth();
-                this[private_.canvas].setCanvasElementHeight();
-                this.setImage();
+            initialize(image) {
+                this.setImage(image);
             }
 
-            setImage() {
-                this[private_.canvas].canvasContext.drawImage(this[private_.image], 0, 0);
+            setImage(image) {
+                this[private_.canvas].makeCanvasClean();
+                this[private_.canvas].canvasWidth = image.width;
+                this[private_.canvas].canvasHeight = image.height;
+                this[private_.canvas].setCanvasElementWidth();
+                this[private_.canvas].setCanvasElementHeight();
+                this[private_.canvas].canvasContext.drawImage(image, 0, 0);
             }
 
             set image(_image) {
@@ -189,20 +145,20 @@ window.onload = function() {
             get canvas() {
                 return this[private_.canvas];
             }
-       };
+        };
     })();
 
     const ImageSelection = (() => {
         const private_ = {
             idImageElement: Symbol('idImageElement'),
-            canvas: Symbol('canvas'),
+            canvasImage: Symbol('canvasImage'),
         }
 
         return class {
-            constructor(_idImageElement, _canvas) {
+            constructor(_idImageElement, _canvasImage) {
                 const self = this;
                 this[private_.idImageElement] = _idImageElement;
-                this[private_.canvas] = _canvas;
+                this[private_.canvasImage] = _canvasImage;
 
                 this[private_.idImageElement].addEventListener("change", function(e){
                     const reader = new FileReader();
@@ -218,11 +174,9 @@ window.onload = function() {
                 const image = new Image();
 
                 image.onload = function() {
-                    self[private_.canvas].canvasContext.clearRect(0, 0, image.width, image.height);
-                    self[private_.canvas].canvasContext.drawImage(image, 0, 0);
+                    self[private_.canvasImage].setImage(image);
                 }
                 image.src = data;
-                console.log(this[private_.canvas].width);
             }
 
             set idImageElement(_idImageElement) {
@@ -233,12 +187,12 @@ window.onload = function() {
                 return this[private_.idImageElement];
             }
 
-            set canvas(_canvas) {
-                this[private_.canvas] = _canvas;
+            set canvasImage(_canvasImage) {
+                this[private_.canvasImage] = _canvasImage;
             }
 
-            get canvas() {
-                return this[private_.canvas];
+            get canvasImage() {
+                return this[private_.canvasImage];
             }
         }
     })();
@@ -251,7 +205,7 @@ window.onload = function() {
     const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d');
 
     const canvasImage1 = new CanvasImage(image, baseImageElement, canvas1);
-    const imageSelection1 = new ImageSelection(idImageElement, canvas1);
+    const imageSelection1 = new ImageSelection(idImageElement, canvasImage1);
 
 
 /*
@@ -303,16 +257,6 @@ window.onload = function() {
             }
             image.src = data;
             console.log(this.canvas.width);
-
-
-
-
-
-
-
-
-
-
 
             image.src = this.canvas.baseImageElement.src;
             this.canvas.canvasContext.drawImage(image, 0, 0);
