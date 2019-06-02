@@ -2,7 +2,7 @@ window.onload = function() {
 
 };
 
-(function() {
+(() => {
     'use strict';
 
     const menuElement = document.getElementsByClassName('menu');
@@ -94,14 +94,16 @@ window.onload = function() {
         const private_ = {
             image: Symbol('image'),
             baseImageElement: Symbol('baseImageElement'),
+            slideBarOfScalingElement: Symbol('slideBarOfScalingElement'),
             canvas: Symbol('canvas'),
         };
 
         return class {
-            constructor(_image, _baseImageElement, _canvas) {
+            constructor(_image, _baseImageElement, _slideBarOfScalingElement, _canvas) {
                 const self = this;
                 this[private_.image] = _image;
                 this[private_.baseImageElement] = _baseImageElement;
+                this[private_.slideBarOfScalingElement] = _slideBarOfScalingElement;
                 this[private_.image].src = this[private_.baseImageElement].src;
                 this[private_.canvas] = _canvas;
                 this[private_.image].addEventListener('load', function() {
@@ -138,6 +140,14 @@ window.onload = function() {
                 return this[private_.baseImageElement];
             }
 
+            set slideBarOfScalingElement(_slideBarOfScalingElement) {
+                this[private_.slideBarOfScalingElement] = _slideBarOfScalingElement;
+            }
+
+            get slideBarOfScalingElement() {
+                return this[private_.slideBarOfScalingElement];
+            }
+
             set canvas(_canvas) {
                 this[private_.canvas] = _canvas;
             }
@@ -160,9 +170,9 @@ window.onload = function() {
                 this[private_.idImageElement] = _idImageElement;
                 this[private_.canvasImage] = _canvasImage;
 
-                this[private_.idImageElement].addEventListener("change", function(e){
+                this[private_.idImageElement].addEventListener("change", (e) => {
                     const reader = new FileReader();
-                    reader.onload = function (e) {
+                    reader.onload = (e) => {
                         self.switchImage(e.target.result, self);
                     }
                     reader.readAsDataURL(e.target.files[0]);
@@ -173,7 +183,7 @@ window.onload = function() {
 
                 const image = new Image();
 
-                image.onload = function() {
+                image.onload = () => {
                     self[private_.canvasImage].setImage(image);
                 }
                 image.src = data;
@@ -197,15 +207,220 @@ window.onload = function() {
         }
     })();
 
+    const RectangleSelection = (() => {
+
+        const private_ = {
+            canvas: Symbol('canvas'),
+            elementXCoordinate: Symbol('elementXCoordinate'),
+            elementYCoordinate: Symbol('elementYCoordinate'),
+            xStartingPoint: Symbol('xStartingPoint'),
+            yStartingPoint: Symbol('yStartingPoint'),
+            xCurrentPoint: Symbol('xCurrentPoint'),
+            yCurrentPoint: Symbol('yCurrentPoint'),
+        }
+
+        return class {
+            constructor(_canvas) {
+                this[private_.canvas] = _canvas;
+                this[private_.canvasElementPosition] = this[private_.canvas].canvasElement.getBoundingClientRect();
+                this[private_.elementXCoordinate] = this[private_.canvasElementPosition].left + window.pageXOffset;
+                this[private_.elementYCoordinate] = this[private_.canvasElementPosition].top + window.pageYOffset;
+                this[private_.xStartingPoint];
+                this[private_.yStartingPoint];
+                this[private_.xCurrentPoint];
+                this[private_.yCurrentPoint];
+            }
+
+            drawRectangle() {
+/*
+                const valAdjustRectangleSelectionSize = this.adjustRectangleSelectionSize.bind(null, this);
+                this.startRectangleSelected(valAdjustRectangleSelectionSize);
+                this.endRectangleSelected(valAdjustRectangleSelectionSize);
+*/
+            }
+
+            startRectangleSelected(valAdjustRectangleSelectionSize) {
+/*
+                document.addEventListener('mousedown', (e) => {
+                    this[private_.xStartingPoint] = e.pageX - this[private_.canvas].canvasElement.offsetLeft;
+                    this[private_.yStartingPoint] = e.pageY - this[private_.canvas].canvasElement.offsetTop;
+                    document.addEventListener('mousemove', valAdjustRectangleSelectionSize);
+                });
+*/
+            }
+
+            endRectangleSelected(valAdjustRectangleSelectionSize) {
+/*
+                document.addEventListener('mouseup', (e) => {
+                    document.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
+                });
+*/
+            }
+
+            adjustRectangleSelectionSize(_this, e) {
+/*
+                _this[private_.xCurrentPoint] = e.pageX - _this[private_.canvas].canvasElement.offsetLeft;
+                _this[private_.yCurrentPoint] = e.pageY - _this[private_.canvas].canvasElement.offsetTop;
+
+                _this[private_.xCurrentPoint] = _this.judgeRectangleSelectionMaximumSizeOfX(_this[private_.xCurrentPoint], _this[private_.canvas].canvasWidth, _this[private_.elementXCoordinate]);
+                _this[private_.yCurrentPoint] = _this.judgeRectangleSelectionMaximumSizeOfY(_this[private_.yCurrentPoint], _this[private_.canvas].canvasHeight + _this[private_.elementYCoordinate], _this[private_.elementYCoordinate]);
+
+                _this[private_.canvas].canvasContext.clearRect(0, 0, _this[private_.canvas].canvasWidth, _this[private_.canvas].canvasHeight);
+                _this[private_.canvas].canvasContext.drawImage(_this.createRectangleByOffScreen(_this[private_.xStartingPoint], _this[private_.yStartingPoint], _this[private_.xCurrentPoint], _this[private_.yCurrentPoint]), 0, 0);
+*/
+            }
+
+            createRectangleByOffScreen(xStartingPoint, yStartingPoint, xCurrentPoint, yCurrentPoint) {
+/*
+                this[private_.canvas].offScreenCanvasContext.strokeRect(xStartingPoint, yStartingPoint - this[private_.elementYCoordinate], xCurrentPoint - xStartingPoint, yCurrentPoint - yStartingPoint);
+                return this[private_.canvas].offScreenCanvasElement;
+*/
+            }
+
+            judgeRectangleSelectionMaximumSizeOfX(currentPoint, maximumSize, minimumSize) {
+/*
+                if(currentPoint >= maximumSize) {
+                    return maximumSize - 1;
+                } else if(currentPoint <= minimumSize) {
+                    return 1;
+                } else {
+                    return currentPoint;
+                }
+*/
+            }
+
+            judgeRectangleSelectionMaximumSizeOfY(currentPoint, maximumSize, minimumSize) {
+/*
+                if(currentPoint >= maximumSize) {
+                    return maximumSize - 1;
+                } else if(currentPoint <= this[private_.elementYCoordinate]) {
+                    return this[private_.elementYCoordinate] + 1;
+                } else {
+                    return currentPoint;
+                }
+*/
+            }
+
+            set canvas(_canvas) {
+                this[private_.canvas] = _canvas;
+            }
+
+            get canvas() {
+                return this[private_.canvas];
+            }
+
+            set canvasElementPosition(_canvasElementPosition) {
+                this[private_.canvasElementPosition] = _canvasElementPosition;
+            }
+
+            get canvasElementPosition() {
+                return this[private_.canvasElementPosition];
+            }
+
+            set elementXCoordinate(_elementXCoordinate) {
+                this[private_.elementXCoordinate] = _elementXCoordinate;
+            }
+
+            get elementXCoordinate() {
+                return this[private_.elementXCoordinate];
+            }
+
+            set elementYCoordinate(_elementYCoordinate) {
+                this[private_.elementYCoordinate] = _elementYCoordinate;
+            }
+
+            get elementYCoordinate() {
+                return this[private_.elementYCoordinate];
+            }
+
+            set xStartingPoint(_xStartingPoint) {
+                this[private_.xStartingPoint] = _xStartingPoint;
+            }
+
+            get xStartingPoint() {
+                return this[private_.xStartingPoint];
+            }
+
+            set yStartingPoint(_yStartingPoint) {
+                this[private_.yStartingPoint] = _yStartingPoint;
+            }
+
+            get yStartingPoint() {
+                return this[private_.yStartingPoint];
+            }
+
+            set xCurrentPoint(_xCurrentPoint) {
+                this[private_.xCurrentPoint] = _xCurrentPoint;
+            }
+
+            get xCurrentPoint() {
+                return this[private_.xCurrentPoint];
+            }
+
+            set yCurrentPoint(_yCurrentPoint) {
+                this[private_.yCurrentPoint] = _yCurrentPoint;
+            }
+
+            get yCurrentPoint() {
+                return this[private_.yCurrentPoint];
+            }
+        }
+
+
+    })();
+
+    const Scaling = (() => {
+        const private_ = {
+            slideBarOfScalingElement: Symbol('slideBarOfScalingElement'),
+            canvasImage: Symbol('canvasImage'),
+        }
+
+        return class {
+            constructor(_slideBarOfScalingElement, _canvasImage) {
+
+                const self = this;
+                this[private_.slideBarOfScalingElement] = _slideBarOfScalingElement;
+                console.log(this[private_.slideBarOfScalingElement]);
+                this[private_.canvasImage] = _canvasImage;
+
+                this[private_.slideBarOfScalingElement].addEventListener("change", (e) => {
+                    console.log(self[private_.slideBarOfScalingElement].value);
+                },false);
+            }
+
+            set slideBarOfScalingElement(_slideBarOfScalingElement) {
+                this[private_.slideBarOfScalingElement] = _slideBarOfScalingElement;
+            }
+
+            get slideBarOfScalingElement() {
+                return this[private_.slideBarOfScalingElement];
+            }
+
+            set canvasImage(_canvasImage) {
+                this[private_.canvasImage] = _canvasImage;
+            }
+
+            get canvasImage() {
+                return this[private_.canvasImage];
+            }
+        }
+    })();
+
     const canvasElement = document.getElementById('canvas');
     const offScreenCanvasElement = document.createElement('canvas');
     const baseImageElement = document.getElementById('base_image');
     const idImageElement = document.getElementById('id_image');
+    const slideBarOfScalingElement = document.getElementById('slide_bar_of_scaling');
+
     const image = new Image();
     const canvas1 = new Canvas(canvasElement, offScreenCanvasElement, baseImageElement, '2d');
 
-    const canvasImage1 = new CanvasImage(image, baseImageElement, canvas1);
+    const canvasImage1 = new CanvasImage(image, baseImageElement, slideBarOfScalingElement, canvas1);
     const imageSelection1 = new ImageSelection(idImageElement, canvasImage1);
+    const scaling1 = new Scaling(slideBarOfScalingElement, canvasImage1);
+
+    const rectangleSelection1 = new RectangleSelection(canvas1);
+    rectangleSelection1.drawRectangle(slideBarOfScalingElement, canvasImage1);
 
 
 /*

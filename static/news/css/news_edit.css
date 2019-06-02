@@ -1,1 +1,6 @@
 /* news_edit */
+.slide_bar_of_scaling {
+    height: 5px;
+    border-radius: 6px;
+    background-color: #c7c7c7;
+}
