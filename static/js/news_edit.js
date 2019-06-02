@@ -116,12 +116,18 @@ window.onload = function() {
             }
 
             setImage(image) {
+                this[private_.image] = image;
                 this[private_.canvas].makeCanvasClean();
                 this[private_.canvas].canvasWidth = image.width;
                 this[private_.canvas].canvasHeight = image.height;
                 this[private_.canvas].setCanvasElementWidth();
                 this[private_.canvas].setCanvasElementHeight();
                 this[private_.canvas].canvasContext.drawImage(image, 0, 0);
+            }
+
+            zoomImage(value) {
+                this[private_.canvas].canvasContext.scale(value, value);
+                this[private_.canvas].canvasContext.drawImage(this[private_.image], 0, 0);
             }
 
             set image(_image) {
@@ -377,14 +383,13 @@ window.onload = function() {
 
         return class {
             constructor(_slideBarOfScalingElement, _canvasImage) {
-
                 const self = this;
                 this[private_.slideBarOfScalingElement] = _slideBarOfScalingElement;
                 console.log(this[private_.slideBarOfScalingElement]);
                 this[private_.canvasImage] = _canvasImage;
 
                 this[private_.slideBarOfScalingElement].addEventListener("change", (e) => {
-                    console.log(self[private_.slideBarOfScalingElement].value);
+                    self[private_.canvasImage].zoomImage(self[private_.slideBarOfScalingElement].value);
                 },false);
             }
 
