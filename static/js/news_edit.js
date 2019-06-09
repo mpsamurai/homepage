@@ -101,79 +101,63 @@ window.onload = function() {
             setImg(baseImgElem) {
                 const img = new Image();
                 const canvasContainerWidth = canvasContainerElem.clientWidth;
-/*
-                const baseImageWidth = baseImageElement.naturalWidth;
-                const baseImageHeight = baseImageElement.naturalHeight;
-*/
 
-                const baseImgWidth = 1680;
-                const baseImgHeight = 1050;
+                const baseImgWidth = baseImgElem.naturalWidth;
+                const baseImgHeight = baseImgElem.naturalHeight;
+                const smallNumCalcBasedOnTheRatio = this.calcSmallNumCalcBasedOnTheRatio(baseImgWidth, baseImgHeight);
+                const imgWidth = this.judgeImgWidthExceedsTheCanvasWidth(baseImgWidth);
+                const aspectRatio = this.findAspectRatio(imgWidth)(baseImgWidth);
+                const imgHeight = this.calcImgHeight(baseImgWidth, baseImgHeight, imgWidth, smallNumCalcBasedOnTheRatio);
 
+                canvasElem.setAttribute('width', imgWidth);
+                canvasElem.setAttribute('height', imgHeight);
 
-                var biggerResult = Math.max(baseImgWidth, baseImgHeight);
-                var smallerResult = Math.min(baseImgWidth, baseImgHeight);
-
-                console.log('大きい方: ' + biggerResult);
-                console.log('小さい方: ' + smallerResult);
-
-                const smallNumCalcBasedOnTheRatio = smallerResult / biggerResult;
-
-
-
-
-
-
-                const aspectRatio = this.findAspectRatio(canvasContainerWidth)(baseImgWidth);
-                let width = baseImgWidth * aspectRatio;
-
-                console.log('widthは ' + width);
-
-                if(width >= 1200) {
-                    width = 1200;
-                }
-
-                console.log('widthは ' + width);
-
-                let height;
-
-                if(baseImgWidth >= baseImgHeight) {
-                    height = width * smallNumCalcBasedOnTheRatio;
-                } else if(baseImgWidth <= baseImgHeight) {
-                    height = width / smallNumCalcBasedOnTheRatio;
-                }
-
-                console.log('widthは' + width);
-                console.log('heightは' + height);
-
-                canvasElem.setAttribute('width', width);
-                canvasElem.setAttribute('height', height);
                 this._canvasContext.scale(aspectRatio, aspectRatio)
                 this._canvasContext.drawImage(baseImgElem, 0, 0);
-
-/*
-                const aspectRatio = this.findAspectRatio(canvasContainerWidth)(baseImageWidth);
-                let w = baseImageWidth * aspectRatio;
-                canvasElement.setAttribute('width', baseImageWidth * aspectRatio);
-                canvasElement.setAttribute('height', baseImageHeight * aspectRatio);
-                this._canvasContext.scale(aspectRatio, aspectRatio)
-                this._canvasContext.drawImage(baseImageElement, 0, 0);
-*/
             }
 
-            findAspectRatio(containerWidth) {
-                return (imgWidth) => {
-                    return containerWidth / imgWidth;
+            calcSmallNumCalcBasedOnTheRatio(baseImgWidth, baseImgHeight) {
+
+                if(baseImgWidth >= baseImgHeight) {
+                    return baseImgHeight / baseImgWidth;
+                } else {
+                    return baseImgWidth / baseImgHeight;
                 }
             }
 
+            findAspectRatio(imgWidth) {
+                return (baseImgWidth) => {
+                    return imgWidth / baseImgWidth;
+                }
+            }
+
+            judgeImgWidthExceedsTheCanvasWidth(width) {
+
+                const bodyElem = document.getElementsByTagName('body');
+
+                if(width >= bodyElem[0].clientWidth) {
+                    return bodyElem[0].clientWidth;
+                } else {
+                    return width;
+                }
+            }
+
+            calcImgHeight(baseImgWidth, baseImgHeight, imgWidth, smallNumCalcBasedOnTheRatio) {
+                if(baseImgWidth >= baseImgHeight) {
+                    return imgWidth * smallNumCalcBasedOnTheRatio;
+                } else if(baseImgWidth <= baseImgHeight) {
+                    return imgWidth / smallNumCalcBasedOnTheRatio;
+                }
+            }
+
+/*
             findGreatestCommonDivisor(x) {
                 return (y) => {
                     if(y === 0) return x;
                     return findGreatestCommonDivisor(y)(x % y);
                 }
             }
-
-
+*/
             update(value) {
                 console.log('clippedImage ' + value);
             }
@@ -186,6 +170,7 @@ window.onload = function() {
     const baseImgElem = document.getElementById('base_image');
     const idImgElem = document.getElementById('id_image');
     const slideBarOfScalingElem = document.getElementById('slide_bar_of_scaling');
+
 
     const scale1 = new Scale();
     const preview1 = new Preview();
