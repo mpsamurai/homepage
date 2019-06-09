@@ -17,12 +17,9 @@ window.onload = function() {
                 this._idImgElem.addEventListener('change', (e) => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        self.switchImage(e.target.result, self);
+                        self.switchImg(e.target.result, self);
                     }
                     reader.readAsDataURL(e.target.files[0]);
-
-
-
                 }, false);
             }
 /*
@@ -42,19 +39,17 @@ window.onload = function() {
                 this.observerList.push(obj);
             }
 
-            switchImage(data, self) {
-
+            switchImg(data, self) {
 
                 const img = new Image();
 
                 img.onload = () => {
                     for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                        self.observerList[i].setImg(img);
+                        self.observerList[i].setImg({img: img});
                     }
                 }
                 img.src = data;
             }
-
 
 /*
             notifyObserver() {
@@ -63,22 +58,28 @@ window.onload = function() {
                 }
             }
 */
+
         }
     })();
 
     const Scale = (() => {
         return class {
-            constructor() {
+            constructor(slideBarOfScalingElem) {
+                const self = this;
                 this.observerList = [];
+                this._slideBarOfScalingElem = slideBarOfScalingElem;
+                this._slideBarOfScalingElem.addEventListener('change', (e) => {
+                    self.scaleImg();
+                }, false);
             }
 
             addObserver(obj) {
                 this.observerList.push(obj);
             }
 
-            notifyObserver() {
+            scaleImg() {
                 for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                    this.observerList[i].update('scale');
+                    this.observerList[i].setImg({img: null, scale: this._slideBarOfScalingElem.value});
                 }
             }
         }
@@ -123,29 +124,74 @@ window.onload = function() {
 
     const ClippedImg = (() => {
         return class {
-            constructor(canvasContainerElem, canvasElem, baseImgElem, context) {
+            constructor(canvasContainerElem, canvasElem, baseImgElem, imgElem, context) {
+                const self = this;
                 this._canvasContainerElem = canvasContainerElem;
                 this._canvasElem = canvasElem;
                 this._baseImgElem = baseImgElem;
+                this._imgElem = imgElem;
                 this._canvasContext = canvasElem.getContext(context);
+                this._imgElem.src = baseImgElem.src;
+                this._imgElem.addEventListener('load', function() {
+                    self.setImg({img: self._imgElem});
+                });
             }
 
-            setImg(imgToBeDisplayed) {
-                const img = new Image();
+            setImg(args) {
+
+                console.log('args.img: ' + args.img);
+
                 const canvasContainerWidth = canvasContainerElem.clientWidth;
 
-                const baseImgWidth = imgToBeDisplayed.naturalWidth;
-                const baseImgHeight = imgToBeDisplayed.naturalHeight;
+                const baseImgSize = this.getBaseImgSize(args);
+
+                console.log(baseImgSize.width);
+                console.log(baseImgSize.height);
+
+
+                const smallNumCalcBasedOnTheRatio = this.calcSmallNumCalcBasedOnTheRatio(baseImgSize.width, baseImgSize.height);
+                const imgWidth = this.judgeImgWidthExceedsTheCanvasWidth(baseImgSize.width);
+                let aspectRatio = this.findAspectRatio(imgWidth)(baseImgSize.width);
+                const imgHeight = this.calcImgHeight(baseImgSize.width, baseImgSize.height, imgWidth, smallNumCalcBasedOnTheRatio);
+
+                canvasElem.setAttribute('width', imgWidth);
+                canvasElem.setAttribute('height', imgHeight);
+
+                this._canvasContext.scale(aspectRatio, aspectRatio)
+
+
+
+                if(args.img == null) {
+                    this._canvasContext.drawImage(this._imgElem, 0, 0);
+                } else {
+                    this._canvasContext.drawImage(args.img, 0, 0);
+                }
+
+
+/*
+                const baseImgWidth = args.img.naturalWidth;
+                const baseImgHeight = args.img.naturalHeight;
                 const smallNumCalcBasedOnTheRatio = this.calcSmallNumCalcBasedOnTheRatio(baseImgWidth, baseImgHeight);
                 const imgWidth = this.judgeImgWidthExceedsTheCanvasWidth(baseImgWidth);
-                const aspectRatio = this.findAspectRatio(imgWidth)(baseImgWidth);
+                let aspectRatio = this.findAspectRatio(imgWidth)(baseImgWidth);
                 const imgHeight = this.calcImgHeight(baseImgWidth, baseImgHeight, imgWidth, smallNumCalcBasedOnTheRatio);
 
                 canvasElem.setAttribute('width', imgWidth);
                 canvasElem.setAttribute('height', imgHeight);
 
                 this._canvasContext.scale(aspectRatio, aspectRatio)
-                this._canvasContext.drawImage(imgToBeDisplayed, 0, 0);
+
+
+                this._canvasContext.drawImage(args.img, 0, 0);
+*/
+            }
+
+            getBaseImgSize(args) {
+                if(args.img == null) {
+                    return {width: this._imgElem.naturalWidth, height: this._imgElem.naturalHeight};
+                } else {
+                    return {width: args.img.naturalWidth, height: args.img.naturalHeight};
+                }
             }
 
             calcSmallNumCalcBasedOnTheRatio(baseImgWidth, baseImgHeight) {
@@ -201,21 +247,23 @@ window.onload = function() {
     const offScreenCanvasElem = document.createElement('canvas');
     const baseImgElem = document.getElementById('base_image');
     const idImgElem = document.getElementById('id_image');
+    const imgElem = new Image();
     const slideBarOfScalingElem = document.getElementById('slide_bar_of_scaling');
 
-    const scale1 = new Scale();
+    const scale1 = new Scale(slideBarOfScalingElem);
     const preview1 = new Preview();
     const imgSelector1 = new ImgSelector(idImgElem);
     const canvas1 = new Canvas(canvasElem);
-    const clippedImg1 = new ClippedImg(canvasContainerElem, canvasElem, baseImgElem, '2d');
+    const clippedImg1 = new ClippedImg(canvasContainerElem, canvasElem, baseImgElem, imgElem, '2d');
 
     scale1.addObserver(clippedImg1);
     preview1.addObserver(clippedImg1);
     imgSelector1.addObserver(clippedImg1);
     canvas1.addObserver(clippedImg1);
 
+/*
     clippedImg1.setImg(baseImgElem);
-
+*/
 
 
 
