@@ -68,9 +68,11 @@ window.onload = function() {
                 const self = this;
                 this.observerList = [];
                 this._slideBarOfScalingElem = slideBarOfScalingElem;
-                this._slideBarOfScalingElem.addEventListener('change', (e) => {
+/*
+                this._slideBarOfScalingElem.addEventListener('input', (e) => {
                     self.scaleImg();
                 }, false);
+*/
             }
 
             addObserver(obj) {
@@ -133,40 +135,73 @@ window.onload = function() {
                 this._canvasContext = canvasElem.getContext(context);
                 this._imgElem.src = baseImgElem.src;
                 this._imgElem.addEventListener('load', function() {
-                    self.setImg({img: self._imgElem});
+                    self.setImg({img: self._imgElem, scale: 1});
                 });
             }
 
             setImg(args) {
 
+
+
+
+                this._canvasContext.drawImage(args.img, 0, 0);
+
+
+const slider = document.getElementById('slide_bar_of_scaling');
+slider.value = 1;
+// 倍率の最小・最大値
+slider.min = 0.01;
+slider.max = 2;
+// 粒度
+slider.step = 'any';
+
+// スライダーが動いたら拡大・縮小して再描画する
+slider.addEventListener('input', e => {
+  // 一旦クリア
+  this._canvasContext.clearRect(0, 0, 1000, 1000);
+  // 倍率変更
+  const scale = e.target.value;
+  this._canvasContext.scale(scale, scale);
+  // 再描画
+  this._canvasContext.drawImage(args.img, 0, 0);
+  // 変換マトリクスを元に戻す
+  this._canvasContext.scale(1 / scale, 1 / scale);
+});
+
+
+
+
+
+
+
+/*
                 console.log('args.img: ' + args.img);
 
                 const canvasContainerWidth = canvasContainerElem.clientWidth;
 
                 const baseImgSize = this.getBaseImgSize(args);
 
-                console.log(baseImgSize.width);
-                console.log(baseImgSize.height);
-
-
-                const smallNumCalcBasedOnTheRatio = this.calcSmallNumCalcBasedOnTheRatio(baseImgSize.width, baseImgSize.height);
+                const smallNumCalcBasedOnTheRatio = this.calcSmallNumCalcBasedOnTheRatio(baseImgSize.width)(baseImgSize.height);
                 const imgWidth = this.judgeImgWidthExceedsTheCanvasWidth(baseImgSize.width);
                 let aspectRatio = this.findAspectRatio(imgWidth)(baseImgSize.width);
+
+                console.log('aspectRatio: ' + aspectRatio + ' scale: ' + args.scale);
+
                 const imgHeight = this.calcImgHeight(baseImgSize.width, baseImgSize.height, imgWidth, smallNumCalcBasedOnTheRatio);
 
                 canvasElem.setAttribute('width', imgWidth);
                 canvasElem.setAttribute('height', imgHeight);
 
-                this._canvasContext.scale(aspectRatio, aspectRatio)
+                var test = aspectRatio * args.scale;
 
-
+                this._canvasContext.scale(test, test)
 
                 if(args.img == null) {
                     this._canvasContext.drawImage(this._imgElem, 0, 0);
                 } else {
                     this._canvasContext.drawImage(args.img, 0, 0);
                 }
-
+*/
 
 /*
                 const baseImgWidth = args.img.naturalWidth;
@@ -194,12 +229,13 @@ window.onload = function() {
                 }
             }
 
-            calcSmallNumCalcBasedOnTheRatio(baseImgWidth, baseImgHeight) {
-
-                if(baseImgWidth >= baseImgHeight) {
-                    return baseImgHeight / baseImgWidth;
-                } else {
-                    return baseImgWidth / baseImgHeight;
+            calcSmallNumCalcBasedOnTheRatio(baseImgWidth) {
+                return (baseImgHeight) => {
+                    if(baseImgWidth >= baseImgHeight) {
+                        return baseImgHeight / baseImgWidth;
+                    } else {
+                        return baseImgWidth / baseImgHeight;
+                    }
                 }
             }
 
