@@ -45,7 +45,8 @@ window.onload = function() {
 
                 img.onload = () => {
                     for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                        self.observerList[i].setImg({img: img});
+                        self.observerList[i].imgElem = img;
+                        self.observerList[i].setImg({scale: 1});
                     }
                 }
                 img.src = data;
@@ -68,11 +69,13 @@ window.onload = function() {
                 const self = this;
                 this.observerList = [];
                 this._slideBarOfScalingElem = slideBarOfScalingElem;
-/*
+                this._slideBarOfScalingElem.value = 1;
+                this._slideBarOfScalingElem.min = 0.01;
+                this._slideBarOfScalingElem.max = 2;
+                this._slideBarOfScalingElem.step = 'any';
                 this._slideBarOfScalingElem.addEventListener('input', (e) => {
-                    self.scaleImg();
+                    self.scaleImg({scale: e.target.value});
                 }, false);
-*/
             }
 
             addObserver(obj) {
@@ -81,7 +84,7 @@ window.onload = function() {
 
             scaleImg() {
                 for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                    this.observerList[i].setImg({img: null, scale: this._slideBarOfScalingElem.value});
+                    this.observerList[i].setImg({scale: this._slideBarOfScalingElem.value});
                 }
             }
         }
@@ -128,14 +131,21 @@ window.onload = function() {
         return class {
             constructor(canvasContainerElem, canvasElem, baseImgElem, imgElem, context) {
                 const self = this;
+
+
                 this._canvasContainerElem = canvasContainerElem;
                 this._canvasElem = canvasElem;
                 this._baseImgElem = baseImgElem;
                 this._imgElem = imgElem;
+                this._canvasSize;
+                this._imgSize;
                 this._canvasContext = canvasElem.getContext(context);
-                this._imgElem.src = baseImgElem.src;
-                this._imgElem.addEventListener('load', function() {
-                    self.setImg({img: self._imgElem, scale: 1});
+                this.imgElem.src = baseImgElem.src;
+
+
+
+                this.imgElem.addEventListener('load', function() {
+                    self.setImg({scale: 1});
                 });
             }
 
@@ -144,29 +154,38 @@ window.onload = function() {
 
 
 
-                this._canvasContext.drawImage(args.img, 0, 0);
+                console.log(args.scale);
+
+                // 倍率変更
 
 
-const slider = document.getElementById('slide_bar_of_scaling');
-slider.value = 1;
-// 倍率の最小・最大値
-slider.min = 0.01;
-slider.max = 2;
-// 粒度
-slider.step = 'any';
 
-// スライダーが動いたら拡大・縮小して再描画する
-slider.addEventListener('input', e => {
-  // 一旦クリア
-  this._canvasContext.clearRect(0, 0, 1000, 1000);
-  // 倍率変更
-  const scale = e.target.value;
-  this._canvasContext.scale(scale, scale);
-  // 再描画
-  this._canvasContext.drawImage(args.img, 0, 0);
-  // 変換マトリクスを元に戻す
-  this._canvasContext.scale(1 / scale, 1 / scale);
-});
+                this.imgSize = {width: this.imgElem.naturalWidth, height: this.imgElem.naturalHeight}
+                this.canvasContext.clearRect(0, 0, this.imgSize.width, this.imgSize.height);
+                const smallNumCalcBasedOnTheRatio = this.calcSmallNumCalcBasedOnTheRatio(this.imgSize.width)(this.imgSize.height);
+
+
+
+                console.log(this.imgSize.width, this.imgSize.height);
+
+                console.log(smallNumCalcBasedOnTheRatio);
+
+
+
+                console.log(args.scale);
+
+
+                this.canvasElem.setAttribute('width', this.imgElem.naturalWidth * args.scale);
+                this.canvasElem.setAttribute('height', (this.imgElem.naturalWidth * args.scale) * smallNumCalcBasedOnTheRatio);
+
+                const scale = args.scale;
+                this._canvasContext.scale(scale, scale);
+
+                // 再描画
+                this._canvasContext.drawImage(this._imgElem, 0, 0);
+
+                // 変換マトリクスを元に戻す
+                this._canvasContext.scale(1 / scale, 1 / scale);
 
 
 
@@ -221,6 +240,87 @@ slider.addEventListener('input', e => {
 */
             }
 
+            get canvasContainerElem() {
+                return this._canvasContainerElem;
+            }
+
+            set canvasContainerElem(elem) {
+                this._canvasContainerElem = elem;
+            }
+
+            get canvasElem() {
+                return this._canvasElem;
+            }
+
+            set canvasElem(elem) {
+                this._canvasElem = elem;
+            }
+
+            get baseImgElem() {
+                return this._baseImgElem;
+            }
+
+            set baseImgElem(elem) {
+                this._baseImgElem = elem;
+            }
+
+
+
+
+
+
+
+
+
+
+
+            get canvasSize() {
+                return this._canvasSize;
+            }
+
+            set canvasSize(val) {
+                this._canvasSize = val;
+            }
+
+
+
+
+
+
+            get imgSize() {
+                return this._imgSize;
+            }
+
+            set imgSize(val) {
+                this._imgSize = val;
+            }
+
+
+
+            get imgElem() {
+                return this._imgElem;
+            }
+
+            set imgElem(val) {
+                this._imgElem = val;
+            }
+
+            get canvasContext() {
+                return this._canvasContext;
+            }
+
+            set canvasContext(val) {
+                this._canvasContext = val;
+            }
+
+
+
+
+
+
+
+
+
             getBaseImgSize(args) {
                 if(args.img == null) {
                     return {width: this._imgElem.naturalWidth, height: this._imgElem.naturalHeight};
@@ -231,11 +331,7 @@ slider.addEventListener('input', e => {
 
             calcSmallNumCalcBasedOnTheRatio(baseImgWidth) {
                 return (baseImgHeight) => {
-                    if(baseImgWidth >= baseImgHeight) {
-                        return baseImgHeight / baseImgWidth;
-                    } else {
-                        return baseImgWidth / baseImgHeight;
-                    }
+                    return baseImgHeight / baseImgWidth;
                 }
             }
 

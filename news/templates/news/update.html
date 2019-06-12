@@ -16,11 +16,19 @@
         {% for field in form %}
             {% if field.html_name == 'image' %}
 
-                <div style="position: relative;">
+                <div id="canvas_container">
                     <canvas id="canvas"></canvas>
+                    <!--
                     <img style="display: none;" id="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                    -->
+                    <img style="display: none;" id="base_image" src="https://pics.prcm.jp/b6486ef2d5383/77226259/png/77226259_196x291.png" alt="">
+                    <!--
+                    <img style="display: none;" id="base_image" src="http://i.gzn.jp/img/2018/01/15/google-gorilla-ban/00.jpg" alt="">
+                    -->
                 </div>
-
+                <div class="slide_bar_container">
+                    <input id="slide_bar_of_scaling" class="slide_bar_of_scaling" type="range">
+                </div>
                 <div>
                     <canvas id="trimming_canvas"></canvas>
                 </div>
@@ -28,7 +36,8 @@
                 {{ field }}
 
             {% elif field.html_name == 'thumbnail' %}
-                <img src="{% get_media_prefix %}/{{ field.value }}" alt="">
+
+                <!-- <img src="{% get_media_prefix %}/{{ field.value }}" alt=""> -->
                 {{ field }}
             {% elif field.html_name == 'created_date' %}
                 <p>created_date</p>
