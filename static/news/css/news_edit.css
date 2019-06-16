@@ -1,11 +1,21 @@
 /* news_edit */
 
 #canvas_container {
+    position: relative;
     display: flex;
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    margin-bottom: 15px;
+    max-width: 1200px;
+    height: 600px;
+    margin: 0 auto 15px;
+    padding: 10px;
+    border: solid 2px #ccc;
+    background: linear-gradient(#0097FF, #1E00FF);
+    box-sizing: border-box;
+    overflow: scroll;
+}
+
+#canvas {
+    position: absolute;
 }
 
 .slide_bar_container {

@@ -1,7 +1,3 @@
-window.onload = function() {
-
-};
-
 (() => {
     'use strict';
 
@@ -22,43 +18,30 @@ window.onload = function() {
                     reader.readAsDataURL(e.target.files[0]);
                 }, false);
             }
-/*
-            switchImage(data, self) {
 
-                this.notifyObserver();
-                const image = new Image();
-
-                image.onload = () => {
-                    self[private_.canvasImage].setImage(img);
-                }
-                image.src = data;
+            get idImgElem() {
+                return this._idImgElem;
             }
-*/
+
+            set idImgElem(val) {
+                this._idImgElem = val;
+            }
 
             addObserver(obj) {
                 this.observerList.push(obj);
             }
 
             switchImg(data, self) {
-
                 const img = new Image();
-
                 img.onload = () => {
                     for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                        self.observerList[i].setImg({img: img, scale: 1});
+                        self.observerList[i].imgElem = img;
+                        self.observerList[i].scaleObj.slideBarOfScalingElem.value = 1;
+                        self.observerList[i].init({img: img, scale: 1});
                     }
                 }
                 img.src = data;
             }
-
-/*
-            notifyObserver() {
-                for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                    this.observerList[i].showTest();
-                }
-            }
-*/
-
         }
     })();
 
@@ -72,9 +55,18 @@ window.onload = function() {
                 this._slideBarOfScalingElem.min = 0.01;
                 this._slideBarOfScalingElem.max = 2;
                 this._slideBarOfScalingElem.step = 'any';
+
                 this._slideBarOfScalingElem.addEventListener('input', (e) => {
-                    self.scaleImg({scale: self._slideBarOfScalingElem.scale * (1 * e.target.value), obj: self});
+                    self.scaleImg({scale: self.slideBarOfScalingElem.scale * (1 * e.target.value), obj: self});
                 }, false);
+            }
+
+            get slideBarOfScalingElem() {
+                return this._slideBarOfScalingElem;
+            }
+
+            set slideBarOfScalingElem(val) {
+                this._slideBarOfScalingElem = val;
             }
 
             addObserver(obj) {
@@ -128,127 +120,67 @@ window.onload = function() {
 
     const ClippedImg = (() => {
         return class {
-            constructor(canvasContainerElem, canvasElem, baseImgElem, imgElem, slideBarOfScalingElem, context) {
+            constructor(canvasContainerElem, canvasElem, baseImgElem, imgElem, scaleObj, context) {
                 const self = this;
-
-                this._canvasContainerElem = canvasContainerElem;
+                this._canvasContainerWidth = canvasContainerElem.clientWidth;
                 this._canvasElem = canvasElem;
                 this._baseImgElem = baseImgElem;
                 this._imgElem = imgElem;
-                this._canvasSize;
                 this._imgSize;
-                this._slideBarOfScalingElem = slideBarOfScalingElem;
+                this._scaleObj = scaleObj;
                 this._canvasContext = canvasElem.getContext(context);
                 this.imgElem.src = baseImgElem.src;
 
                 this.imgElem.onload = () => {
-                    // self.setImg({img: this.imgElem});
                     self.init({img: this.imgElem});
                 }
             }
 
             init(args) {
-                const aspectRatio = this.calcRatio(this.imgElem.naturalWidth)(this.imgElem.naturalHeight);
-                this.imgSize = {width: this.imgElem.naturalWidth, height: this.imgElem.naturalHeight}
-                const bodyElem = document.getElementsByTagName('body');
-                const ratioImgWidthAdjustedToContainer = this.calcRatio(bodyElem[0].clientWidth)(this.imgSize.width);
-                this.slideBarOfScalingElem.scale = ratioImgWidthAdjustedToContainer;
-                this.setImg({img: args.img,scale: ratioImgWidthAdjustedToContainer});
+                const aspectRatio = this.calcRatio(args.img.naturalWidth)(args.img.naturalHeight);
+                this.imgSize = {width: args.img.naturalWidth, height: args.img.naturalHeight}
+
+                let ratioImgWidthAdjustedToContainer;
+
+                ratioImgWidthAdjustedToContainer = this.calcRatio(this.canvasContainerWidth)(this.imgSize.width);
+
+                this._scaleObj._slideBarOfScalingElem.scale = ratioImgWidthAdjustedToContainer;
+
+                this.setImg({img: args.img, scale: ratioImgWidthAdjustedToContainer});
             }
 
             setImg(args) {
-                console.log(args.scale);
                 this.canvasElem.setAttribute('width', this.imgSize.width * args.scale);
                 this.canvasElem.setAttribute('height', this.imgSize.height * args.scale);
 
                 this.canvasContext.scale(args.scale, args.scale);
                 this.canvasContext.drawImage(args.img, 0, 0);
-
                 this.canvasContext.scale(1 / args.scale, 1 / args.scale);
-
-
-
-
-/*
-                this.imgSize = {width: this.imgElem.naturalWidth, height: this.imgElem.naturalWidth * smallNumCalcBasedOnTheRatio}
-
-                this.imgScale = args.scale;
-
-                this.canvasContext.scale(this.imgScale, this.imgScale);
-
-
-                this.canvasContext.clearRect(0, 0, this.imgSize.width * this.imgScale, this.imgSize.height * this.imgScale);
-
-                this.canvasElem.setAttribute('width', this.imgSize.width * this.imgScale);
-                this.canvasElem.setAttribute('height', this.imgSize.height * this.imgScale);
-
-
-                this._canvasContext.scale(this.imgScale, this.imgScale);
-                this.drawImage(args.img);
-*/
-
-                // 変換マトリクスを元に戻す
-//                this.canvasContext.scale(1 / this.imgScale, 1 / this.imgScale);
             }
 
-
-
-
-            drawImage(img) {
-                this.canvasContext.drawImage(img, 0, 0);
+            get canvasContainerWidth() {
+                return this._canvasContainerWidth;
             }
 
-
-
-
-
-            get canvasContainerElem() {
-                return this._canvasContainerElem;
-            }
-
-            set canvasContainerElem(elem) {
-                this._canvasContainerElem = elem;
+            set canvasContainerWidth(val) {
+                this._canvasContainerWidth = val;
             }
 
             get canvasElem() {
                 return this._canvasElem;
             }
 
-            set canvasElem(elem) {
-                this._canvasElem = elem;
+            set canvasElem(val) {
+                this._canvasElem = val;
             }
 
             get baseImgElem() {
                 return this._baseImgElem;
             }
 
-            set baseImgElem(elem) {
-                this._baseImgElem = elem;
+            set baseImgElem(val) {
+                this._baseImgElem = val;
             }
-
-
-
-
-
-
-
-
-
-
-
-            get canvasSize() {
-                return this._canvasSize;
-            }
-
-            set canvasSize(val) {
-                this._canvasSize = val;
-            }
-
-
-
-
-
-
 
             get imgSize() {
                 return this._imgSize;
@@ -258,35 +190,6 @@ window.onload = function() {
                 this._imgSize = val;
             }
 
-
-
-
-
-
-
-
-            get imgScale() {
-                return this._imgScale;
-            }
-
-            set imgScale(val) {
-
-
-                const bodyElem = document.getElementsByTagName('body');
-
-                console.log('width: ' + this.imgSize.width * val);
-                console.log('container: ' + bodyElem[0].clientWidth);
-
-                if(this.imgSize.width * val <= bodyElem[0].clientWidth) {
-                    this._imgScale = val;
-                }
-            }
-
-
-
-
-
-
             get imgElem() {
                 return this._imgElem;
             }
@@ -294,8 +197,6 @@ window.onload = function() {
             set imgElem(val) {
                 this._imgElem = val;
             }
-
-
 
             get slideBarOfScalingElem() {
                 return this._slideBarOfScalingElem;
@@ -305,7 +206,13 @@ window.onload = function() {
                 this._slideBarOfScalingElem = val;
             }
 
+            get scaleObj() {
+                return this._scaleObj;
+            }
 
+            set scaleObj(val) {
+                this._scaleObj = val;
+            }
 
             get canvasContext() {
                 return this._canvasContext;
@@ -315,57 +222,19 @@ window.onload = function() {
                 this._canvasContext = val;
             }
 
-
-
-
-
-
-
-
-
-
-
             calcRatio(val1) {
                 return (val2) => {
                     return val1 / val2;
                 }
             }
 
-
-/*
-
-            judgeImgWidthExceedsTheCanvasWidth(width) {
-
-                const bodyElem = document.getElementsByTagName('body');
-
-                if(width >= bodyElem[0].clientWidth) {
-                    return bodyElem[0].clientWidth;
-                } else {
-                    return width;
-                }
-            }
-
-            calcImgHeight(baseImgWidth, baseImgHeight, imgWidth, smallNumCalcBasedOnTheRatio) {
-                if(baseImgWidth >= baseImgHeight) {
-                    return imgWidth * smallNumCalcBasedOnTheRatio;
-                } else if(baseImgWidth <= baseImgHeight) {
-                    return imgWidth / smallNumCalcBasedOnTheRatio;
-                }
-            }
-
-            findGreatestCommonDivisor(x) {
-                return (y) => {
-                    if(y === 0) return x;
-                    return findGreatestCommonDivisor(y)(x % y);
-                }
-            }
-*/
             update(value) {
                 console.log('clippedImage ' + value);
             }
         }
     })();
 
+    const bodyElem = document.getElementsByTagName('body');
     const canvasContainerElem = document.getElementById('canvas_container');
     const canvasElem = document.getElementById('canvas');
     const offScreenCanvasElem = document.createElement('canvas');
@@ -378,58 +247,11 @@ window.onload = function() {
     const preview1 = new Preview();
     const imgSelector1 = new ImgSelector(idImgElem);
     const canvas1 = new Canvas(canvasElem);
-    const clippedImg1 = new ClippedImg(canvasContainerElem, canvasElem, baseImgElem, imgElem, slideBarOfScalingElem, '2d');
+    const clippedImg1 = new ClippedImg(canvasContainerElem, canvasElem, baseImgElem, imgElem, scale1, '2d');
 
     scale1.addObserver(clippedImg1);
     preview1.addObserver(clippedImg1);
     imgSelector1.addObserver(clippedImg1);
     canvas1.addObserver(clippedImg1);
-
-/*
-    clippedImg1.setImg(baseImgElem);
-*/
-
-
-
-
-
-/*
-function findGreatestCommonDivisor(x, y) {
-    if(y === 0) return x;
-    return findGreatestCommonDivisor(y, x % y);
-}
-*/
-
-function findGreatestCommonDivisor(x) {
-    return (y) => {
-        if(y === 0) return x;
-        return findGreatestCommonDivisor(y)(x % y);
-    }
-}
-
-/*
-let w = 600;
-let h = 1500;
-
-const gcd = findGreatestCommonDivisor(w)(h);
-
-console.log('最大公約数: ' + gcd);
-
-let widthRatio = w / gcd;
-let heightRatio = h / gcd;
-
-console.log('横の比率: ' + widthRatio);
-console.log('縦の比率: ' + heightRatio);
-
-(function() {
-    if(widthRatio >= heightRatio) {
-        console.log('横幅: ' + w * (heightRatio / widthRatio));
-        console.log('縦幅: ' + h * (heightRatio / widthRatio));
-    } else {
-        console.log('横幅: ' + w * (widthRatio / heightRatio));
-        console.log('縦幅: ' + h * (widthRatio / heightRatio));
-    }
-})();
-*/
 
 })();
