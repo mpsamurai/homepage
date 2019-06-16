@@ -73,11 +73,7 @@ window.onload = function() {
                 this._slideBarOfScalingElem.max = 2;
                 this._slideBarOfScalingElem.step = 'any';
                 this._slideBarOfScalingElem.addEventListener('input', (e) => {
-                    console.log('scale: ' + self._slideBarOfScalingElem.scale);
-                    console.log('target: ' + 1 * e.target.value);
-                    console.log('計算後: ' + self._slideBarOfScalingElem.scale * (1 * e.target.value));
-
-                    self.scaleImg({scale: e.target.value, obj: self});
+                    self.scaleImg({scale: self._slideBarOfScalingElem.scale * (1 * e.target.value), obj: self});
                 }, false);
             }
 
@@ -146,32 +142,29 @@ window.onload = function() {
                 this.imgElem.src = baseImgElem.src;
 
                 this.imgElem.onload = () => {
-                    self.setImg({img: this.imgElem});
+                    // self.setImg({img: this.imgElem});
+                    self.init({img: this.imgElem});
                 }
             }
 
-            setImg(args) {
+            init(args) {
                 const aspectRatio = this.calcRatio(this.imgElem.naturalWidth)(this.imgElem.naturalHeight);
-
                 this.imgSize = {width: this.imgElem.naturalWidth, height: this.imgElem.naturalHeight}
-
                 const bodyElem = document.getElementsByTagName('body');
-
                 const ratioImgWidthAdjustedToContainer = this.calcRatio(bodyElem[0].clientWidth)(this.imgSize.width);
-
-
                 this.slideBarOfScalingElem.scale = ratioImgWidthAdjustedToContainer;
+                this.setImg({img: args.img,scale: ratioImgWidthAdjustedToContainer});
+            }
 
-                console.log(this.slideBarOfScalingElem.scale);
+            setImg(args) {
+                console.log(args.scale);
+                this.canvasElem.setAttribute('width', this.imgSize.width * args.scale);
+                this.canvasElem.setAttribute('height', this.imgSize.height * args.scale);
 
+                this.canvasContext.scale(args.scale, args.scale);
+                this.canvasContext.drawImage(args.img, 0, 0);
 
-                this.canvasElem.setAttribute('width', this.imgSize.width * ratioImgWidthAdjustedToContainer);
-                this.canvasElem.setAttribute('height', this.imgSize.height * ratioImgWidthAdjustedToContainer);
-
-                this.canvasContext.scale(ratioImgWidthAdjustedToContainer, ratioImgWidthAdjustedToContainer);
-                this.drawImage(args.img);
-
-                this.canvasContext.scale(1 / this.imgScale, 1 / this.imgScale);
+                this.canvasContext.scale(1 / args.scale, 1 / args.scale);
 
 
 
