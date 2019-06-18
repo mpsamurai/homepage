@@ -4,12 +4,10 @@
     position: relative;
     display: flex;
     justify-content: center;
-    max-width: 1200px;
     height: 600px;
-    margin: 0 auto 15px;
-    padding: 10px;
-    border: solid 2px #ccc;
+    margin-bottom: 15px;
     background: linear-gradient(#0097FF, #1E00FF);
+    border: solid #eee;
     box-sizing: border-box;
     overflow: scroll;
 }

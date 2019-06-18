@@ -115,15 +115,15 @@
                 this.canvasContext = this.canvasElem.getContext(context);
                 this.offScreenCanvasContext = this.offScreenCanvasElem.getContext(context);
                 this.canvasElemPosition = this.canvasElem.getBoundingClientRect();
-                this.coordinate;
-
-                this.coordinate = {xCoordinateOfElem: this.canvasElemPosition.left + window.pageXOffset};
-                this.coordinate = {yCoordinateOfElem: this.canvasElemPosition.top + window.pageYOffset};
+                this.coordinate = {};
+                this.coordinate.xCoordinateOfElem = this.canvasElemPosition.left + window.pageXOffset;
+                this.coordinate.yCoordinateOfElem = this.canvasElemPosition.top + window.pageYOffset;
+/*
                 this.coordinate.xStartingPoint;
                 this.coordinate.yStartingPoint;
                 this.coordinate.xCurrentPoint;
                 this.coordinate.yCurrentPoint;
-
+*/
 
                 this.elementXCoordinate = this.canvasElemPosition.left + window.pageXOffset;
                 this.elementYCoordinate = this.canvasElemPosition.top + window.pageYOffset;
@@ -131,13 +131,25 @@
                 this.yStartingPoint;
                 this.xCurrentPoint;
                 this.yCurrentPoint;
+
+
+                this.drawRectangle(this.canvasContainerElem)(this.canvasElem)(this.canvasElemPosition)(this.coordinate);
+
+
             }
 
-            drawRectangle() {
+            drawRectangle(canvasContainerElem) {
+                return (canvasElem) => {
+                    return (canvasElemPosition) => {
+                        return (coordinate) => {
+                            const valAdjustRectangleSelectionSize = this.adjustRectangleSelectionSize.bind(null)(this)('test1')('test2');
+                            this.startRectangleSelected(canvasContainerElem)(canvasElem)(canvasElemPosition)(coordinate)(valAdjustRectangleSelectionSize);
+                        }
+                    }
+                }
 
 
-                const valAdjustRectangleSelectionSize = this.adjustRectangleSelectionSize.bind(null)(this)('test1')('test2');
-                this.startRectangleSelected(valAdjustRectangleSelectionSize)(this.canvasElem)(this.coordinate);
+
 //                this.endRectangleSelected(valAdjustRectangleSelectionSize);
 
 
@@ -151,16 +163,26 @@
 
             }
 
-            startRectangleSelected(valAdjustRectangleSelectionSize) {
+            startRectangleSelected(canvasContainerElem) {
                 return (canvasElem) => {
-                    return (coordinate) => {
-                        canvasElem.test = 'testです';
-                        canvasElem.addEventListener('mousedown', (e) => {
-                            console.log(e.target.test);
+                    return (canvasElemPosition) => {
+                        return (coordinate) => {
+                            return (valAdjustRectangleSelectionSize) => {
 
 
+                                const a = canvasContainerElem.style.borderWidth.slice(0, 2);
+                                console.log(a);
+                                console.log(50 - a);
 
-                        });
+
+                                canvasElem.coordinate = coordinate;
+                                canvasElem.addEventListener('mousedown', (e) => {
+                                    e.target.coordinate.xStartingPoint = e.pageX - canvasElem.offsetLeft;
+                                    e.target.coordinate.yStartingPoint = e.pageY - canvasElem.offsetTop;
+                                    console.log(e.target.coordinate.xStartingPoint);
+                                });
+                            }
+                        }
                     }
                 }
 
@@ -417,6 +439,7 @@
     })();
 
     const canvasContainerElem = document.getElementById('canvas_container');
+    canvasContainerElem.style.borderWidth = 30 + 'px';
     const canvasElem = document.getElementById('canvas');
     const offScreenCanvasElem = document.createElement('canvas');
     const baseImgElem = document.getElementById('base_image');
@@ -435,5 +458,5 @@
     imgSelector1.addObserver(clippedImg1);
     canvas1.addObserver(clippedImg1);
 
-    canvas1.drawRectangle();
+    //canvas1.drawRectangle();
 })();
