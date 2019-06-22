@@ -133,17 +133,20 @@
                 this.yCurrentPoint;
 
 
-                this.drawRectangle(this.canvasContainerElem)(this.canvasElem)(this.canvasElemPosition)(this.coordinate);
+                this.drawRectangle(this.canvasContainerElem)(this.canvasElem)(this.offScreenCanvasElem)(this.canvasElemPosition)(this.coordinate);
 
 
             }
 
             drawRectangle(canvasContainerElem) {
                 return (canvasElem) => {
-                    return (canvasElemPosition) => {
-                        return (coordinate) => {
-                            const valAdjustRectangleSelectionSize = this.adjustRectangleSelectionSize.bind(null)(this)('test1')('test2');
-                            this.startRectangleSelected(canvasContainerElem)(canvasElem)(canvasElemPosition)(coordinate)(valAdjustRectangleSelectionSize);
+                    return (offScreenCanvasElem) => {
+                        return (canvasElemPosition) => {
+                            return (coordinate) => {
+                                const valAdjustRectangleSelectionSize = this.adjustRectangleSelectionSize.bind(null)(this);
+                                this.startRectangleSelected(canvasContainerElem)(canvasElem)(canvasElemPosition)(coordinate)(valAdjustRectangleSelectionSize);
+                                this.endRectangleSelected(canvasContainerElem)(canvasElem)(canvasElemPosition)(coordinate)(valAdjustRectangleSelectionSize);
+                            }
                         }
                     }
                 }
@@ -169,17 +172,22 @@
                         return (coordinate) => {
                             return (valAdjustRectangleSelectionSize) => {
 
-
-                                const a = canvasContainerElem.style.borderWidth.slice(0, 2);
-                                console.log(a);
-                                console.log(50 - a);
-
-
+                                const canvasBorderWidth = canvasContainerElem.style.borderWidth.slice(0, 2);
+                                canvasElem.elemYCoordinate = canvasElemPosition.top + window.pageYOffset;
                                 canvasElem.coordinate = coordinate;
+                                canvasElem.canvasBorderWidth = canvasBorderWidth;
                                 canvasElem.addEventListener('mousedown', (e) => {
-                                    e.target.coordinate.xStartingPoint = e.pageX - canvasElem.offsetLeft;
-                                    e.target.coordinate.yStartingPoint = e.pageY - canvasElem.offsetTop;
-                                    console.log(e.target.coordinate.xStartingPoint);
+
+                                    e.target.coordinate.xStartingPoint = e.pageX - canvasElem.offsetLeft - canvasElem.canvasBorderWidth;
+                                    e.target.coordinate.yStartingPoint = e.pageY - canvasElem.offsetTop - canvasElem.elemYCoordinate;
+
+
+
+
+
+
+
+                                    canvasElem.addEventListener('mousemove', valAdjustRectangleSelectionSize(canvasElem.elemYCoordinate)(e.target.coordinate));
                                 });
                             }
                         }
@@ -203,26 +211,74 @@
             }
 
             endRectangleSelected(valAdjustRectangleSelectionSize) {
-                document.addEventListener('mouseup', (e) => {
-                    console.log('end');
 
-                    document.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
-                });
+                return (canvasElem) => {
+                    return (canvasElemPosition) => {
+                        return (coordinate) => {
+                            return (valAdjustRectangleSelectionSize) => {
+
+                                const canvasBorderWidth = canvasContainerElem.style.borderWidth.slice(0, 2);
+                                canvasElem.elemYCoordinate = canvasElemPosition.top + window.pageYOffset;
+                                canvasElem.coordinate = coordinate;
+                                canvasElem.canvasBorderWidth = canvasBorderWidth;
+                                document.addEventListener('mouseup', (e) => {
+
+
+
+                                    canvasElem.removeEventListener('mousemove', valAdjustRectangleSelectionSize(canvasElem.elemYCoordinate)(e.target.coordinate));
+                                });
+                            }
+                        }
+                    }
+
+                }
             }
 
             adjustRectangleSelectionSize(self) {
-                return (test1) => {
-                    return (test2) => {
+                return (elemYCoordinate) => {
+
+
+
+                    return (coordinate) => {
                         return (e) => {
+                            coordinate.xCurrentPoint = e.pageX - canvasElem.offsetLeft - canvasElem.canvasBorderWidth;
+                            coordinate.yCurrentPoint = e.pageY - canvasElem.offsetTop - canvasElem.elemYCoordinate;
+
+
+
+
+                            console.log('startX: ' + coordinate.xStartingPoint);
+                            console.log('startY: ' + coordinate.yStartingPoint);
+                            console.log('currentX: ' + coordinate.xCurrentPoint);
+                            console.log('currentY: ' + coordinate.yCurrentPoint);
+
+
 /*
-                            console.log(e);
-                            console.log('***' + self);
-                            console.log('***' + test1);
-                            console.log('***' + test2);
+                            console.log('startX: ' + coordinate.xStartingPoint);
+                            console.log('startY: ' + coordinate.xStartingPoint);
+                            console.log('currentX: ' + coordinate.xStartingPoint);
+                            console.log('currentY: ' + coordinate.xStartingPoint);
+*/
+
+                            self.canvasContext.drawImage(self.createRectangleByOffScreen(elemYCoordinate)(coordinate), 0, 0);
+
+
+/*
+                        console.log(e);
+                        console.log('***' + self);
+                        console.log('***' + test1);
+                        console.log('***' + test2);
 */
                         }
                     }
+
+
+
+
+
+
                 }
+
 
 /*
                 self.xCurrentPoint = e.pageX - self.canvasElem.offsetLeft;
@@ -258,10 +314,12 @@
 
 
 
-            createRectangleByOffScreen(xStartingPoint, yStartingPoint, xCurrentPoint, yCurrentPoint) {
+            createRectangleByOffScreen(elemYCoordinate) {
+                return (coordinate) => {
 
-
-
+                    this.offScreenCanvasContext.fillRect(coordinate.xStartingPoint, coordinate.yStartingPoint, coordinate.xCurrentPoint - coordinate.xStartingPoint, coordinate.yCurrentPoint - coordinate.yStartingPoint);
+                    return this.offScreenCanvasElem;
+                }
 
 /*
                 this.offScreenCanvasElem.width = 10000;
@@ -272,8 +330,6 @@
 */
 
 //                this.offScreenCanvasContext.strokeRect(xStartingPoint, yStartingPoint - this.elementYCoordinate, xCurrentPoint - xStartingPoint, yCurrentPoint - yStartingPoint);
-                this.offScreenCanvasContext.fillRect(0, 0, 100, 100);
-                return this.offScreenCanvasElem;
             }
 
             judgeRectangleSelectionMaximumSizeOfX(currentPoint, maximumSize, minimumSize) {
@@ -331,7 +387,18 @@
                 this._imgSize;
                 this._scaleObj = scaleObj;
                 this._canvasContainerWidth = canvasObj.canvasContainerElem.clientWidth;
+
+                this._canvasObj = canvasObj;
+
+
+
+
+
                 this._canvasElem = canvasObj.canvasElem;
+
+
+
+
                 this._canvasContext = canvasObj.canvasContext;
                 this.imgElem.src = baseImgElem.src;
 
@@ -354,8 +421,11 @@
             }
 
             setImg(args) {
-                this.canvasElem.setAttribute('width', this.imgSize.width * args.scale);
-                this.canvasElem.setAttribute('height', this.imgSize.height * args.scale);
+                console.log(this.canvasObj);
+                this.canvasObj.canvasElem.setAttribute('width', this.imgSize.width * args.scale);
+                this.canvasObj.canvasElem.setAttribute('height', this.imgSize.height * args.scale);
+                this.canvasObj.offScreenCanvasElem.setAttribute('width', this.imgSize.width * args.scale);
+                this.canvasObj.offScreenCanvasElem.setAttribute('height', this.imgSize.height * args.scale);
 
                 this.canvasContext.scale(args.scale, args.scale);
                 this.canvasContext.drawImage(args.img, 0, 0);
@@ -370,12 +440,37 @@
                 this._canvasContainerWidth = val;
             }
 
+
+
+
+
+
+
             get canvasElem() {
                 return this._canvasElem;
             }
 
             set canvasElem(val) {
                 this._canvasElem = val;
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+            get canvasObj() {
+                return this._canvasObj;
+            }
+
+            set canvasObj(val) {
+                this._canvasObj = val;
             }
 
             get baseImgElem() {
