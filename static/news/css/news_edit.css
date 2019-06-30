@@ -16,9 +16,19 @@
     position: absolute;
 }
 
+#trim_canvas_container {
+    display: flex;
+    justify-content: center;
+}
+
+#trimming_canvas {
+    border: solid 1px #f00;
+}
+
 .slide_bar_container {
     display: flex;
     justify-content: center;
+    margin-bottom: 60px;
 }
 
 .slide_bar_of_scaling {
