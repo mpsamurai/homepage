@@ -99,10 +99,11 @@
 
     const Preview = (() => {
         return class {
-            constructor(trimCanvasElem, context) {
+            constructor(trimCanvasElem, clippedImgCoordinate, context) {
                 const self = this;
                 this._observerList = [];
                 this._trimCanvasElem = trimCanvasElem;
+                this._clippedImgCoordinate = clippedImgCoordinate;
                 this._trimCanvasContext = trimCanvasElem.getContext(context);
             }
 
@@ -120,6 +121,14 @@
 
             set trimCanvasElem(val) {
                 this._trimCanvasElem = val;
+            }
+
+            get clippedImgCoordinate() {
+                return this._clippedImgCoordinate;
+            }
+
+            set clippedImgCoordinate(val) {
+                this._clippedImgCoordinate = val;
             }
 
             get trimCanvasContext() {
@@ -140,36 +149,59 @@
                 }
             }
 
-            previewImg(img, coordinate, scale) {
-                const ratioReturnToOriginal = 1 / scale;
-                this.displayPreview(coordinate.xStartingPoint)(coordinate.xEndPoint)(coordinate.yStartingPoint)(coordinate.yEndPoint)(scale)(img);
-            }
-
-            displayPreview(xStartingPoint) {
-                return (xEndPoint) => {
-                    return (yStartingPoint) => {
-                        return (yEndPoint) => {
-                            return (scale) => {
-                                return (img) => {
-                                    const imageCoordinates = this.judgeWhereStartPointIs(xStartingPoint)(xEndPoint)(yStartingPoint)(yEndPoint)(scale);
-                                    this.trimCanvasContext.drawImage(
-                                        img,
-                                        -imageCoordinates.x / scale,
-                                        -imageCoordinates.y / scale,
-                                    );
-                                }
-                            }
+            previewImg(clippedImgObj)  {
+                return (img) => {
+                    return (coordinate) => {
+                        return (scale) => {
+                            const size = this.setImgClippingInfo(clippedImgObj)(coordinate)(scale);
+                            this.displayPreview(this.setSizeOfPreview)(img)(size);
+                            return size;
                         }
                     }
                 }
             }
 
-            setSizeOfPreview(width) {
-                return (height) => {
+            setImgClippingInfo(clippedImgObj) {
+                return (coordinate) => {
                     return (scale) => {
-                        this.trimCanvasElem.setAttribute('width', width / scale);
-                        this.trimCanvasElem.setAttribute('height', height / scale);
+                        const xStartingPoint = Math.min(coordinate.xStartingPoint / scale, coordinate.xEndPoint / scale);
+                        const xEndPoint = Math.max(coordinate.xStartingPoint / scale, coordinate.xEndPoint / scale);
+                        const yStartingPoint = Math.min(coordinate.yStartingPoint / scale, coordinate.yEndPoint / scale);
+                        const yEndPoint = Math.max(coordinate.yStartingPoint / scale, coordinate.yEndPoint / scale);
+
+                        const width = xEndPoint - xStartingPoint;
+                        const height = yEndPoint - yStartingPoint;
+
+                        clippedImgObj.croppedImgInfo = {"x": xStartingPoint, "y": yStartingPoint, "w": width, "h": height}
+
+                        return clippedImgObj.croppedImgInfo;
                     }
+                }
+            }
+
+            displayPreview(func) {
+                return (img) => {
+                    return (size) => {
+                        func(this.trimCanvasElem)(size);
+                        this.trimCanvasContext.drawImage(
+                            img,
+                            size.x,
+                            size.y,
+                            size.w,
+                            size.h,
+                            0,
+                            0,
+                            size.w,
+                            size.h,
+                        );
+                    }
+                }
+            }
+
+            setSizeOfPreview(trimCanvasElem) {
+                return (size) => {
+                    trimCanvasElem.setAttribute('width', size.w);
+                    trimCanvasElem.setAttribute('height', size.h);
                 }
             }
 
@@ -272,6 +304,22 @@
                 this._canvasElemPosition = val;
             }
 
+            get canvasElement() {
+                return this._canvasElement;
+            }
+
+            set canvasElement(val) {
+                this._canvasElement = val;
+            }
+
+            get coordinate() {
+                return this._coordinate;
+            }
+
+            set coordinate(val) {
+                this._coordinate = val;
+            }
+
             drawRectangle(canvasContainerElem) {
                 return (canvasElem) => {
                     return (offScreenCanvasElem) => {
@@ -304,6 +352,7 @@
                                 canvasElem.addEventListener('mouseup', (e) => {
                                     canvasElem.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
                                     this.notifyRectangleSelectionComplete(this.coordinate);
+
                                 });
 
                                 canvasElem.addEventListener('mouseout', (e) => {
@@ -353,22 +402,6 @@
                 return this.offScreenCanvasElem;
             }
 
-            get canvasElement() {
-                return this._canvasElement;
-            }
-
-            set canvasElement(val) {
-                this._canvasElement = val;
-            }
-
-            get coordinate() {
-                return this._coordinate;
-            }
-
-            set coordinate(val) {
-                this._coordinate = val;
-            }
-
             addObserver(obj) {
                 this.observerList.push(obj);
             }
@@ -389,17 +422,19 @@
 
     const ClippedImg = (() => {
         return class {
-            constructor(baseImgElem, imgElem, scaleObj, canvasObj, context) {
+            constructor(baseImgElem, imgElem, scaleObj, canvasObj, clippedImgCoordinate, context) {
                 const self = this;
                 this._observerList = [];
                 this._baseImgElem = baseImgElem;
                 this._imgElem = imgElem;
                 this._imgSize;
+                this._croppedImgInfo = {};
                 this._imgScale;
                 this._scaleObj = scaleObj;
                 this._canvasContainerWidth = canvasObj.canvasContainerElem.clientWidth;
                 this._canvasObj = canvasObj;
                 this._canvasElem = canvasObj.canvasElem;
+                this._clippedImgCoordinate = clippedImgCoordinate;
                 this._canvasContext = canvasObj.canvasContext;
                 this.imgElem.src = baseImgElem.src;
 
@@ -469,12 +504,20 @@
                 this._baseImgElem = val;
             }
 
-            get imgSize() {
-                return this._imgSize;
+            get croppedImgInfo() {
+                return this._croppedImgInfo;
             }
 
-            set imgSize(val) {
-                this._imgSize = val;
+            set croppedImgInfo(val) {
+                this._croppedImgInfo = val;
+            }
+
+            get imgScale() {
+                return this._imgScale;
+            }
+
+            set imgScale(val) {
+                this._imgScale = val;
             }
 
             get imgScale() {
@@ -509,6 +552,14 @@
                 this._scaleObj = val;
             }
 
+            get clippedImgCoordinate() {
+                return this._clippedImgCoordinate;
+            }
+
+            set clippedImgCoordinate(val) {
+                this._clippedImgCoordinate = val;
+            }
+
             get canvasContext() {
                 return this._canvasContext;
             }
@@ -527,16 +578,16 @@
                 this.observerList.push(obj);
             }
 
-            notifyObserver() {
+            makePreviewObjPreview(coordinate) {
                 for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                    this.observerList[i].update('clippedImage');
+                    //this.observerList[i].previewImg(this.imgElem, coordinate, this.imgScale);
+                    this.croppedImgInfo = this.observerList[i].previewImg(this)(this.imgElem)(coordinate)(this.imgScale);
+                    this.setImgCroppingDataForm(this.croppedImgInfo);
                 }
             }
 
-            makePreviewObjPreview(coordinate) {
-                for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                    this.observerList[i].previewImg(this.imgElem, coordinate, this.imgScale);
-                }
+            setImgCroppingDataForm(croppedImgInfo) {
+                this.clippedImgCoordinate.value = JSON.stringify(this.croppedImgInfo);
             }
         }
     })();
@@ -548,17 +599,17 @@
     const trimCanvasElem = document.getElementById('trimming_canvas');
     const baseImgElem = document.getElementById('base_image');
     const idImgElem = document.getElementById('id_image');
+    const clippedImgCoordinate = document.getElementById('coordinate');
     const imgElem = new Image();
     const slideBarOfScalingElem = document.getElementById('slide_bar_of_scaling');
 
     const scale1 = new Scale(slideBarOfScalingElem);
-    const preview1 = new Preview(trimCanvasElem, '2d');
+    const preview1 = new Preview(trimCanvasElem, clippedImgCoordinate, '2d');
     const imgSelector1 = new ImgSelector(idImgElem);
     const canvas1 = new Canvas(canvasContainerElem, canvasElem, offScreenCanvasElem, '2d');
-    const clippedImg1 = new ClippedImg(baseImgElem, imgElem, scale1, canvas1, '2d');
+    const clippedImg1 = new ClippedImg(baseImgElem, imgElem, scale1, canvas1, clippedImgCoordinate, '2d');
 
     scale1.addObserver(clippedImg1);
-    //preview1.addObserver(clippedImg1);
     imgSelector1.addObserver(clippedImg1);
     canvas1.addObserver(clippedImg1);
     clippedImg1.addObserver(preview1);

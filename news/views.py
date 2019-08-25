@@ -1,11 +1,18 @@
 import json
-from django.shortcuts import render
+from collections import OrderedDict
+from PIL import Image
+
+
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from .models import Top, Article, ArticleTag
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views import generic
+from .forms import ArticleForm
+from django.views.decorators.csrf import csrf_exempt
 
 def _get_page(list_, page_no, count=9):
     paginator = Paginator(list_, count)
@@ -127,14 +134,63 @@ class IndexView(generic.ListView):
 
 class UpdateView(generic.edit.UpdateView):
     model =  Article
-    fields = '__all__'
+    form_class = ArticleForm
     template_name = 'news/update.html'
 
+    def form_valid(self, form):
+        article = super(ArticleForm, form).save()
 
-"""
-def edit_list(request):
-    data = {
-        'title': 'testです',
-    }
-    return render(request, "news/edit_list.html", data)
-"""
+        json_data = self.request.POST.get('hidden', '')
+        cropped_img_info = json.loads(json_data)
+
+        image = Image.open(article.image)
+        cropped_image = image.crop((
+            cropped_img_info['x'],
+            cropped_img_info['y'],
+            cropped_img_info['x'] + cropped_img_info['w'],
+            cropped_img_info['y'] + cropped_img_info['h']
+        ))
+        cropped_image.save(article.image.path)
+
+        try:
+            raise ValueError('error')
+            print('************')
+            print(cropped_img_info)
+            print('************')
+        except ValueError as e:
+            print(e)
+
+
+        return redirect('/news/edit_list/')
+
+
+
+'''
+    def form_valid(self, form):
+        post = form.save(commit=False)
+
+        try:
+            print('************')
+            raise ValueError(post)
+            print('************')
+        except ValueError as e:
+            print(e)
+
+        return redirect('/news/edit_list/')
+'''
+
+'''
+    def post(self, request, *args, **kwargs):
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            print('***************')
+            print('***************')
+            return HttpResponse('')
+        return redirect('/news/edit_list/')
+'''
+
+
+
+def cropped_image(request):
+
+    return JsonResponse({})
