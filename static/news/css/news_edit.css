@@ -1,6 +1,6 @@
 /* news_edit */
 
-#canvas_container {
+.canvas_container {
     position: relative;
     display: flex;
     justify-content: center;
@@ -12,17 +12,18 @@
     overflow: scroll;
 }
 
-#canvas {
+.canvas {
     position: absolute;
 }
 
-#trim_canvas_container {
+.trim_canvas_container {
     display: flex;
     justify-content: center;
 }
 
-#trimming_canvas {
+.trimming_canvas {
     border: solid 1px #f00;
+    box-sizing: border-box;
 }
 
 .slide_bar_container {

@@ -241,11 +241,9 @@
                 this._offScreenCanvasElem = offScreenCanvasElem;
                 this._canvasContext = this.canvasElem.getContext(context);
                 this._offScreenCanvasContext = this.offScreenCanvasElem.getContext(context);
-                this._canvasElemPosition = this.canvasElem.getBoundingClientRect();
                 this._coordinate = {};
 
                 this.drawRectangle(this.canvasContainerElem)(this.canvasElem)(this.offScreenCanvasElem)(this.canvasElemPosition);
-
             }
 
             get observerList() {
@@ -325,7 +323,7 @@
                     return (offScreenCanvasElem) => {
                         return (canvasElemPosition) => {
                             const valAdjustRectangleSelectionSize = this.adjustRectangleSelectionSize.bind(null)(this);
-                            this.startRectangleSelected(canvasContainerElem)(canvasElem)(canvasElemPosition)(valAdjustRectangleSelectionSize);
+                            this.startRectangleSelected(canvasContainerElem)(canvasElem)(valAdjustRectangleSelectionSize);
                         }
                     }
                 }
@@ -333,44 +331,37 @@
 
             startRectangleSelected(canvasContainerElem) {
                 return (canvasElem) => {
-                    return (canvasElemPosition) => {
-                        return (valAdjustRectangleSelectionSize) => {
-                            const canvasBorderWidth = canvasContainerElem.style.borderWidth.slice(0, 2);
-                            canvasElem.elemYCoordinate = canvasElemPosition.top + window.pageYOffset;
-                            canvasElem.canvasBorderWidth = canvasBorderWidth;
-                            canvasElem.xStartingPoint;
-                            canvasElem.yStartingPoint;
-                            canvasElem.addEventListener('mousedown', (e) => {
+                    return (valAdjustRectangleSelectionSize) => {
+                        const canvasBorderWidth = canvasContainerElem.style.borderWidth.slice(0, 2);
+                        canvasElem.canvasBorderWidth = canvasBorderWidth;
+                        canvasElem.xStartingPoint;
+                        canvasElem.yStartingPoint;
+                        canvasElem.addEventListener('mousedown', (e) => {
 
-                                e.target.xStartingPoint = e.pageX - canvasElem.offsetLeft - canvasElem.canvasBorderWidth + canvasContainerElem.scrollLeft;
-                                e.target.yStartingPoint = e.pageY - canvasElem.offsetTop - canvasElem.elemYCoordinate + canvasContainerElem.scrollTop;
-                                e.target.containerScrollTop = canvasContainerElem.scrollTop;
-                                e.target.containerScrollLeft = canvasContainerElem.scrollLeft;
+                            e.target.xStartingPoint = e.pageX - canvasElem.canvasBorderWidth + canvasContainerElem.scrollLeft;
+                            e.target.yStartingPoint = e.pageY - canvasElem.getBoundingClientRect().top - window.pageYOffset - canvasElem.scrollTop;
+                            canvasElem.addEventListener('mousemove', valAdjustRectangleSelectionSize);
 
-                                canvasElem.addEventListener('mousemove', valAdjustRectangleSelectionSize);
+                            canvasElem.addEventListener('mouseup', (e) => {
+                                canvasElem.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
+                                this.notifyRectangleSelectionComplete(this.coordinate);
 
-                                canvasElem.addEventListener('mouseup', (e) => {
-                                    canvasElem.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
-                                    this.notifyRectangleSelectionComplete(this.coordinate);
-
-                                });
-
-                                canvasElem.addEventListener('mouseout', (e) => {
-                                    canvasElem.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
-                                    this.notifyRectangleSelectionComplete(this.coordinate);
-                                });
                             });
-                        }
+
+                            canvasElem.addEventListener('mouseout', (e) => {
+                                canvasElem.removeEventListener('mousemove', valAdjustRectangleSelectionSize);
+                                this.notifyRectangleSelectionComplete(this.coordinate);
+                            });
+                        });
                     }
                 }
             }
 
             adjustRectangleSelectionSize(_this) {
                 return (e) => {
-                    e.target.xEndPoint = e.pageX - canvasElem.offsetLeft - canvasElem.canvasBorderWidth + canvasContainerElem.scrollLeft;
-                    e.target.yEndPoint = e.pageY - canvasElem.offsetTop - canvasElem.elemYCoordinate + canvasContainerElem.scrollTop;
-
-                    _this.canvasContext.clearRect(0, 0, canvasElem.width, canvasElem.height);
+                    e.target.xEndPoint = e.pageX - _this.canvasElem.canvasBorderWidth + _this.canvasContainerElem.scrollLeft;
+                    e.target.yEndPoint = e.pageY - _this.canvasElem.getBoundingClientRect().top - window.pageYOffset - _this.canvasElem.scrollTop;
+                    _this.canvasContext.clearRect(0, 0, _this.canvasElem.width, _this.canvasElem.height);
                     _this.redraw();
                     _this.canvasContext.drawImage(_this.createRectangleByOffScreen(e), 0, 0);
                 }
@@ -458,7 +449,7 @@
                 this.canvasObj.canvasElem.setAttribute('height', this.imgSize.height * args.scale);
                 this.canvasObj.offScreenCanvasElem.setAttribute('width', this.imgSize.width * args.scale);
                 this.canvasObj.offScreenCanvasElem.setAttribute('height', this.imgSize.height * args.scale);
-                this.imgScale = args.scale
+                this.imgScale = args.scale;
                 this.canvasContext.scale(args.scale, args.scale);
                 this.canvasContext.drawImage(args.img, 0, 0);
                 this.canvasContext.scale(1 / args.scale, 1 / args.scale);
@@ -580,7 +571,6 @@
 
             makePreviewObjPreview(coordinate) {
                 for (let i = 0, len = this.observerList.length; i < len; i++ ) {
-                    //this.observerList[i].previewImg(this.imgElem, coordinate, this.imgScale);
                     this.croppedImgInfo = this.observerList[i].previewImg(this)(this.imgElem)(coordinate)(this.imgScale);
                     this.setImgCroppingDataForm(this.croppedImgInfo);
                 }
@@ -592,25 +582,62 @@
         }
     })();
 
-    const canvasContainerElem = document.getElementById('canvas_container');
-    canvasContainerElem.style.borderWidth = 30 + 'px';
-    const canvasElem = document.getElementById('canvas');
-    const offScreenCanvasElem = document.createElement('canvas');
-    const trimCanvasElem = document.getElementById('trimming_canvas');
-    const baseImgElem = document.getElementById('base_image');
-    const idImgElem = document.getElementById('id_image');
-    const clippedImgCoordinate = document.getElementById('coordinate');
-    const imgElem = new Image();
-    const slideBarOfScalingElem = document.getElementById('slide_bar_of_scaling');
+    const canvasContainerElem = document.getElementsByClassName('canvas_container');
+    const canvasElem = document.getElementsByClassName('canvas');
+    const trimCanvasElem = document.getElementsByClassName('trimming_canvas');
+    const baseImgElem = document.getElementsByClassName('base_image');
+    const clippedImgCoordinate = document.getElementsByClassName('coordinate');
+    const slideBarOfScalingElem = document.getElementsByClassName('slide_bar_of_scaling');
 
-    const scale1 = new Scale(slideBarOfScalingElem);
-    const preview1 = new Preview(trimCanvasElem, clippedImgCoordinate, '2d');
-    const imgSelector1 = new ImgSelector(idImgElem);
-    const canvas1 = new Canvas(canvasContainerElem, canvasElem, offScreenCanvasElem, '2d');
-    const clippedImg1 = new ClippedImg(baseImgElem, imgElem, scale1, canvas1, clippedImgCoordinate, '2d');
+    const idImgElemImg = document.getElementById('id_image');
+
+    const canvasElemImg = canvasElem[0];
+    const trimCanvasElemImg = trimCanvasElem[0];
+    const baseImgElemImg = baseImgElem[0];
+    const clippedImgCoordinateImg = clippedImgCoordinate[0];
+    const slideBarOfScalingElemImg = slideBarOfScalingElem[0];
+
+    const canvasContainerElemImg = canvasContainerElem[0];
+    canvasContainerElemImg.style.borderWidth = 30 + 'px';
+
+    const offScreenCanvasElemImg = document.createElement('canvas');
+    const imgElemImg = new Image();
+
+    const idImgElemThumb = document.getElementById('id_thumbnail');
+
+    const canvasElemThumb = canvasElem[1];
+    const trimCanvasElemThumb = trimCanvasElem[1];
+    const baseImgElemThumb = baseImgElem[1];
+    const clippedImgCoordinateThumb = clippedImgCoordinate[1];
+    const slideBarOfScalingElemThumb = slideBarOfScalingElem[1];
+
+    const canvasContainerElemThumb = canvasContainerElem[1];
+    canvasContainerElemThumb.style.borderWidth = 30 + 'px';
+
+    const offScreenCanvasElemThumb = document.createElement('canvas');
+    const imgElemThumb = new Image();
+
+
+    const scale1 = new Scale(slideBarOfScalingElemImg);
+    const preview1 = new Preview(trimCanvasElemImg, clippedImgCoordinateImg, '2d');
+    const imgSelector1 = new ImgSelector(idImgElemImg);
+    const canvas1 = new Canvas(canvasContainerElemImg, canvasElemImg, offScreenCanvasElemImg, '2d');
+    const clippedImg1 = new ClippedImg(baseImgElemImg, imgElemImg, scale1, canvas1, clippedImgCoordinateImg, '2d');
 
     scale1.addObserver(clippedImg1);
     imgSelector1.addObserver(clippedImg1);
     canvas1.addObserver(clippedImg1);
     clippedImg1.addObserver(preview1);
+
+
+    const scale2 = new Scale(slideBarOfScalingElemThumb);
+    const preview2 = new Preview(trimCanvasElemThumb, clippedImgCoordinateThumb, '2d');
+    const imgSelector2 = new ImgSelector(idImgElemThumb);
+    const canvas2 = new Canvas(canvasContainerElemThumb, canvasElemThumb, offScreenCanvasElemThumb, '2d');
+    const clippedImg2 = new ClippedImg(baseImgElemThumb, imgElemThumb, scale2, canvas2, clippedImgCoordinateThumb, '2d');
+
+    scale2.addObserver(clippedImg2);
+    imgSelector2.addObserver(clippedImg2);
+    canvas2.addObserver(clippedImg2);
+    clippedImg2.addObserver(preview2);
 })();

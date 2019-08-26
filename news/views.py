@@ -140,57 +140,31 @@ class UpdateView(generic.edit.UpdateView):
     def form_valid(self, form):
         article = super(ArticleForm, form).save()
 
-        json_data = self.request.POST.get('hidden', '')
-        cropped_img_info = json.loads(json_data)
+        json_data_img = self.request.POST.get('hiddenImg', '')
+        json_data_thumb = self.request.POST.get('hiddenThumb', '')
+
+        cropped_img_info = json.loads(json_data_img)
+        cropped_thumb_info = json.loads(json_data_thumb)
 
         image = Image.open(article.image)
+        thumbnail = Image.open(article.thumbnail)
+
         cropped_image = image.crop((
             cropped_img_info['x'],
             cropped_img_info['y'],
             cropped_img_info['x'] + cropped_img_info['w'],
             cropped_img_info['y'] + cropped_img_info['h']
         ))
+
+        cropped_thumb = thumbnail.crop((
+            cropped_thumb_info['x'],
+            cropped_thumb_info['y'],
+            cropped_thumb_info['x'] + cropped_thumb_info['w'],
+            cropped_thumb_info['y'] + cropped_thumb_info['h']
+        ))
+
         cropped_image.save(article.image.path)
-
-        try:
-            raise ValueError('error')
-            print('************')
-            print(cropped_img_info)
-            print('************')
-        except ValueError as e:
-            print(e)
-
+        cropped_thumb.save(article.thumbnail.path)
 
         return redirect('/news/edit_list/')
 
-
-
-'''
-    def form_valid(self, form):
-        post = form.save(commit=False)
-
-        try:
-            print('************')
-            raise ValueError(post)
-            print('************')
-        except ValueError as e:
-            print(e)
-
-        return redirect('/news/edit_list/')
-'''
-
-'''
-    def post(self, request, *args, **kwargs):
-        form = ArticleForm(request.POST)
-        if form.is_valid():
-            print('***************')
-            print('***************')
-            return HttpResponse('')
-        return redirect('/news/edit_list/')
-'''
-
-
-
-def cropped_image(request):
-
-    return JsonResponse({})
