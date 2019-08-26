@@ -1,0 +1,39 @@
+/* news_edit */
+
+.canvas_container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    height: 600px;
+    margin-bottom: 15px;
+    background: linear-gradient(#0097FF, #1E00FF);
+    border: solid #eee;
+    box-sizing: border-box;
+    overflow: scroll;
+}
+
+.canvas {
+    position: absolute;
+}
+
+.trim_canvas_container {
+    display: flex;
+    justify-content: center;
+}
+
+.trimming_canvas {
+    border: solid 1px #f00;
+    box-sizing: border-box;
+}
+
+.slide_bar_container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 60px;
+}
+
+.slide_bar_of_scaling {
+    height: 5px;
+    border-radius: 6px;
+    background-color: #c7c7c7;
+}

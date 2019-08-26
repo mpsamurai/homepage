@@ -1,0 +1,115 @@
+{% extends "news_update.html" %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'news/css/news_edit.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            {% if field.html_name == 'image' %}
+
+                <div class="canvas_container">
+                    <canvas class="canvas"></canvas>
+                    <img style="display: none;" class="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                </div>
+
+                <div class="slide_bar_container">
+                    <input class="slide_bar_of_scaling" type="range">
+                </div>
+                <div class="trim_canvas_container">
+                    <canvas class="trimming_canvas"></canvas>
+                </div>
+
+                <div><input class="coordinate" type="hidden" name="hiddenImg" value=''></div>
+
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'thumbnail' %}
+
+                <div class="canvas_container">
+                    <canvas class="canvas"></canvas>
+                    <img style="display: none;" class="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                </div>
+
+                <div class="slide_bar_container">
+                    <input class="slide_bar_of_scaling" type="range">
+                </div>
+                <div class="trim_canvas_container">
+                    <canvas class="trimming_canvas"></canvas>
+                </div>
+
+                <div><input class="coordinate" type="hidden" name="hiddenThumb" value=''></div>
+
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'created_date' %}
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'title' %}
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'article' %}
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'tags' %}
+                <div>{{ field }}</div>
+            {% endif %}
+        {% endfor %}
+
+
+<!--
+        {% for field in form %}
+            {% if field.html_name == 'image' %}
+
+                <div id="canvas_container">
+                    <canvas id="canvas"></canvas>
+                    <img style="display: none;" id="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                </div>
+
+                <div class="slide_bar_container">
+                    <input id="slide_bar_of_scaling" class="slide_bar_of_scaling" type="range">
+                </div>
+                <div id="trim_canvas_container">
+                    <canvas id="trimming_canvas"></canvas>
+                </div>
+
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'thumbnail' %}
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'created_date' %}
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'title' %}
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'article' %}
+                <div>{{ field }}</div>
+            {% elif field.html_name == 'tags' %}
+                <div>{{ field }}</div>
+            {% endif %}
+        {% endfor %}
+        <div><input id="coordinate" type="hidden" name="hidden" value=''></div>
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <button type="submit">Update</button>
+
+        <script type="text/javascript" src={% static 'js/news_edit.js' %}></script>
+
+    </form>
+</section>
+
+{% endblock %}

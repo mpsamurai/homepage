@@ -1,14 +1,13 @@
 from django.db import models
 from people.models import Employee, Member
 from django.utils import timezone
-
+from django.urls import reverse
 
 class ArticleTag(models.Model):
     name = models.CharField(max_length=30)
 
     def __str__(self):
         return str(self.name)
-
 
 class Article(models.Model):
     image = models.ImageField(upload_to='uploads/news/article/image')
@@ -26,6 +25,8 @@ class Article(models.Model):
     def __str__(self):
         return str(self.title)
 
+    def get_absolute_url(self):
+        return reverse('news:edit_list')
 
 class Top(models.Model):
     image = models.ImageField(
