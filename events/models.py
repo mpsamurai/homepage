@@ -24,7 +24,7 @@ class Top(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
 
 class Tag(models.Model):
@@ -32,7 +32,7 @@ class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.name)
+        return self.name
 
 
 class Event(models.Model):
@@ -49,7 +49,7 @@ class Event(models.Model):
     description = models.TextField(default='')
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
     # mps-id : 4425
 

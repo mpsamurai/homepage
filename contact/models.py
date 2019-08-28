@@ -50,7 +50,7 @@ class CategoryTop(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
 
 class FaqTop(models.Model):
@@ -64,7 +64,7 @@ class FaqTop(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
 
 class ContactTop(models.Model):
@@ -78,4 +78,4 @@ class ContactTop(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title

@@ -16,7 +16,7 @@ class Service(models.Model):
     url = models.URLField()
 
     def __str__(self):
-        return str(self.name)
+        return self.name
 
 
 class Top(models.Model):
@@ -30,4 +30,4 @@ class Top(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title

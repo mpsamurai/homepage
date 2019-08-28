@@ -14,7 +14,7 @@ class ArticleTag(models.Model):
     name = models.CharField(max_length=30)
 
     def __str__(self):
-        return str(self.name)
+        return self.name
 
 class Article(models.Model):
     image = models.ImageField(upload_to='uploads/news/article/image')
@@ -30,7 +30,7 @@ class Article(models.Model):
     is_topic = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
     def get_absolute_url(self):
         return reverse('news:edit_list')
@@ -46,4 +46,4 @@ class Top(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title
