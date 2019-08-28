@@ -2,9 +2,15 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.db import transaction
+from common.models import BaseMainVisual
 
 import requests
 import json
+
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to='uploads/events/top/image', null=True, blank=True)
 
 
 class Top(models.Model):

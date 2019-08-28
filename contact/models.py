@@ -1,4 +1,10 @@
 from django.db import models
+from common.models import BaseMainVisual
+
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to='uploads/contact/top/image', null=True, blank=True)
 
 
 class Category(models.Model):

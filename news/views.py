@@ -168,3 +168,5 @@ class UpdateView(generic.edit.UpdateView):
 
         return redirect('/news/edit_list/')
 
+    def printU(self):
+        return HttpResponse('')

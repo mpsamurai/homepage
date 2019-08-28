@@ -1,5 +1,10 @@
 from django.db import models
-# Create your models here.
+from common.models import BaseMainVisual
+
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to='uploads/message/image', null=True, blank=True)
 
 
 class Message(models.Model):

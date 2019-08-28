@@ -2,6 +2,13 @@ from django.db import models
 from people.models import Employee, Member
 from django.utils import timezone
 from django.urls import reverse
+from common.models import BaseMainVisual
+
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to='uploads/news/top/image', null=True, blank=True)
+
 
 class ArticleTag(models.Model):
     name = models.CharField(max_length=30)
