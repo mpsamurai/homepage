@@ -1,0 +1,68 @@
+{% extends "news_update.html" %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'news/css/news_edit.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<form action="." method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+    {% for field in form %}
+        {% if field.html_name == 'image' %}
+
+            <div class="canvas_container">
+                <canvas class="canvas"></canvas>
+                <img style="display: none;" class="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+            </div>
+
+            <div class="slide_bar_container">
+                <input class="slide_bar_of_scaling" type="range">
+            </div>
+            <div class="trim_canvas_container">
+                <canvas class="trimming_canvas"></canvas>
+            </div>
+
+            <div><input class="coordinate" type="hidden" name="hiddenImg" value=''></div>
+
+            <div class="fields-wrap">{{ field }}</div>
+        {% elif field.html_name == 'thumbnail' %}
+
+            <div class="canvas_container">
+                <canvas class="canvas"></canvas>
+                <img style="display: none;" class="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+            </div>
+
+            <div class="slide_bar_container">
+                <input class="slide_bar_of_scaling" type="range">
+            </div>
+            <div class="trim_canvas_container">
+                <canvas class="trimming_canvas"></canvas>
+            </div>
+
+            <div><input class="coordinate" type="hidden" name="hiddenThumb" value=''></div>
+
+            <div class="fields-wrap">{{ field }}</div>
+        {% elif field.html_name == 'title' %}
+            <div class="fields-wrap">{{ field }}</div>
+        {% elif field.html_name == 'article' %}
+            <div class="fields-wrap">{{ field }}</div>
+        {% elif field.html_name == 'employee' %}
+            <div class="fields-wrap">{{ field }}</div>
+        {% elif field.html_name == 'member' %}
+            <div class="fields-wrap">{{ field }}</div>
+        {% elif field.html_name == 'tags' %}
+            <div class="fields-wrap">{{ field }}</div>
+        {% elif field.html_name == 'is_topic' %}
+            <div class="fields-wrap">{{ field }}</div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="fields-wrap"><button type="submit">Submit</button></div>
+    <script type="text/javascript" src={% static 'js/news_upload.js' %}></script>
+</form>
+
+{% endblock %}

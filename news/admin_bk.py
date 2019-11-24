@@ -10,12 +10,17 @@ from .models import Top, Article, ArticleTag
 
 @admin.register(Top)
 class TopAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'update_at', 'is_used')
+    #list_display = ('id', 'title', 'update_at', 'is_used')
+    list_display = ('id', 'title', 'update_at')
     ordering = ['update_at']
 
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
+
+    list_display = ('title',)
+
+    '''
     list_display = ('created_date',
                     'updated_date',
                     'title',
@@ -24,6 +29,7 @@ class ArticleAdmin(admin.ModelAdmin):
                     'get_member',
                     'get_tags',
                     'is_topic')
+    '''
 
     def get_employee(self, obj):
         return ",".join([e.name for e in obj.employee.all()])
