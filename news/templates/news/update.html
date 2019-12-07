@@ -50,13 +50,37 @@
 
                     <div class="fields-wrap">{{ field }}</div>
                 {% elif field.html_name == 'created_date' %}
-                    <div class="fields-wrap">{{ field }}</div>
+                    <div class="fields-wrap">
+                        <div>{{ field.html_name }}：</div>
+                        <div>{{ field }}</div>
+                    </div>
                 {% elif field.html_name == 'title' %}
-                    <div class="fields-wrap">{{ field }}</div>
+                    <div class="fields-wrap">
+                        <div>{{ field.html_name }}：</div>
+                        <div>{{ field }}</div>
+                    </div>
                 {% elif field.html_name == 'article' %}
-                    <div class="fields-wrap">{{ field }}</div>
+                    <div class="fields-wrap">
+                        <div>{{ field.html_name }}：</div>
+                        <div>{{ field }}</div>
+                    </div>
+                {% elif field.html_name == 'employee' %}
+                    <div class="fields-wrap">
+                        <div>{{ field.html_name }}：</div>
+                        <div>{{ field }}</div>
+                    </div>
+                {% elif field.html_name == 'member' %}
+                    <div class="fields-wrap">
+                        <div>{{ field.html_name }}：</div>
+                        <div>{{ field }}</div>
+                    </div>
                 {% elif field.html_name == 'tags' %}
-                    <div class="fields-wrap">{{ field }}</div>
+                    <div class="fields-wrap">
+                        <div>{{ field.html_name }}：</div>
+                        <div>{{ field }}</div>
+                    </div>
+                {% elif field.html_name == 'is_topic' %}
+                    <div class="fields-wrap">{{ field.html_name }}：{{ field }}</div>
                 {% endif %}
             {% endfor %}
 

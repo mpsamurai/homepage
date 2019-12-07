@@ -42,3 +42,8 @@
     width: 1120px;
     margin: 0 auto;
 }
+
+.fields-wrap input[type="checkbox"] {
+    -webkit-appearance: checkbox;
+    appearance: checkbox;
+}
