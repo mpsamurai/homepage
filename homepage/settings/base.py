@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'services',
     'vision',
     'message',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -88,3 +89,22 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazon.com' % (AWS_STORAGE_BUCKET_NAME)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',  # 1日はそのキャッシュを使う
+}
+
+# 静的ファイルの設定
+STATICFILES_STORAGE = 'homepage.settings.backends.StaticFilesStorage'
+
+# メディアファイルの設定。今回は「project」というプロジェクト名の例
+DEFAULT_FILE_STORAGE = 'homepage.settings.backends.MediaStorage'
+
+AWS_S3_STATIC_ROOT = 'static'
+AWS_S3_MEDIA_ROOT = 'media'
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_STATIC_ROOT)
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_MEDIA_ROOT)
