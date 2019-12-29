@@ -13,3 +13,22 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     }
 }
+
+AWS_DEFAULT_ACL = None
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazon.com' % (AWS_STORAGE_BUCKET_NAME)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+STATICFILES_STORAGE = 'homepage.settings.backends.StaticFilesStorage'
+
+DEFAULT_FILE_STORAGE = 'homepage.settings.backends.MediaStorage'
+
+AWS_S3_STATIC_ROOT = 'static'
+AWS_S3_MEDIA_ROOT = 'media'
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_STATIC_ROOT)
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_MEDIA_ROOT)
