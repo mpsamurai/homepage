@@ -2,7 +2,6 @@ import json
 from collections import OrderedDict
 from PIL import Image
 
-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -85,7 +84,7 @@ def index(request):
         'tags': ArticleTag.objects.all(),
         'paging': paging,
         'flag': flag,
-        'tag_names': tag_names, 
+        'tag_names': tag_names,
     }
 
     return render(request, 'news/index.html', data)
@@ -132,6 +131,27 @@ class IndexView(generic.ListView):
     paginated_by = 5
     template_name = 'news/edit_list.html'
 
+class NewsCreateView(generic.CreateView):
+    def get(self, request, *args, **kwargs):
+        context = {'form': ArticleForm()}
+        return render(request, 'news/create.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = ArticleForm(request.POST, request.FILES)
+        if form.is_valid():
+            article = form.save()
+            article.save()
+
+            json_data_img = self.request.POST.get('hiddenImg', '')
+            json_data_thumb = self.request.POST.get('hiddenThumb', '')
+
+            if json_data_img:
+                crop_image(article, json_data_img, 'image')
+            if json_data_thumb:
+                crop_image(article, json_data_thumb, 'thumbnail')
+            return redirect('/news/create/')
+        return render(request, 'news/create.html', {'form': form})
+
 class UpdateView(generic.edit.UpdateView):
     model =  Article
     form_class = ArticleForm
@@ -143,28 +163,22 @@ class UpdateView(generic.edit.UpdateView):
         json_data_img = self.request.POST.get('hiddenImg', '')
         json_data_thumb = self.request.POST.get('hiddenThumb', '')
 
-        cropped_img_info = json.loads(json_data_img)
-        cropped_thumb_info = json.loads(json_data_thumb)
-
-        image = Image.open(article.image)
-        thumbnail = Image.open(article.thumbnail)
-
-        cropped_image = image.crop((
-            cropped_img_info['x'],
-            cropped_img_info['y'],
-            cropped_img_info['x'] + cropped_img_info['w'],
-            cropped_img_info['y'] + cropped_img_info['h']
-        ))
-
-        cropped_thumb = thumbnail.crop((
-            cropped_thumb_info['x'],
-            cropped_thumb_info['y'],
-            cropped_thumb_info['x'] + cropped_thumb_info['w'],
-            cropped_thumb_info['y'] + cropped_thumb_info['h']
-        ))
-
-        cropped_image.save(article.image.path)
-        cropped_thumb.save(article.thumbnail.path)
-
+        if json_data_img:
+            crop_image(article, json_data_img, 'image')
+        if json_data_thumb:
+            crop_image(article, json_data_thumb, 'thumbnail')
         return redirect('/news/edit_list/')
 
+def crop_image(obj, json_data, attr):
+    cropped_info = json.loads(json_data)
+    target = getattr(obj, attr)
+    image = Image.open(target)
+
+    cropped_image = image.crop((
+        cropped_info['x'],
+        cropped_info['y'],
+        cropped_info['x'] + cropped_info['w'],
+        cropped_info['y'] + cropped_info['h']
+    ))
+
+    cropped_image.save(target.path)

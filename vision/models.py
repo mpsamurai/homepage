@@ -1,6 +1,10 @@
 from django.db import models
+from common.models import BaseMainVisual
 
-# Create your models here.
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to='uploads/vision/top/image/', null=True, blank=True)
 
 
 class Vision(models.Model):

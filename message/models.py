@@ -1,5 +1,10 @@
 from django.db import models
-# Create your models here.
+from common.models import BaseMainVisual
+
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to='uploads/message/image', null=True, blank=True)
 
 
 class Message(models.Model):
@@ -15,7 +20,7 @@ class Message(models.Model):
         ordering = ['-updated_at']
 
     def __str__(self):
-        return str(self.name)
+        return self.name
 
 
 class Biography(models.Model):
@@ -33,7 +38,7 @@ class Biography(models.Model):
         ordering = ['-updated_at']
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
 
 class Top(models.Model):
@@ -47,4 +52,4 @@ class Top(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title

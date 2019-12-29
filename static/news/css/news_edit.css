@@ -37,3 +37,13 @@
     border-radius: 6px;
     background-color: #c7c7c7;
 }
+
+.fields-wrap {
+    width: 1120px;
+    margin: 0 auto;
+}
+
+.fields-wrap input[type="checkbox"] {
+    -webkit-appearance: checkbox;
+    appearance: checkbox;
+}

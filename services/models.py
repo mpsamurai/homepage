@@ -1,4 +1,10 @@
 from django.db import models
+from common.models import BaseMainVisual
+
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to="uploads/services/top/image", null=True, blank=True)
 
 
 class Service(models.Model):
@@ -10,7 +16,7 @@ class Service(models.Model):
     url = models.URLField()
 
     def __str__(self):
-        return str(self.name)
+        return self.name
 
 
 class Top(models.Model):
@@ -24,4 +30,4 @@ class Top(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title

@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'services',
     'vision',
     'message',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,5 @@ USE_TZ = True
 DOORKEEPER_API_TOKEN = os.environ.get('DOORKEEPER_API_TOKEN')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATIC_URL = '/static/'
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+

@@ -1,4 +1,10 @@
 from django.db import models
+from common.models import BaseMainVisual
+
+
+class MainVisual(BaseMainVisual):
+    image = models.ImageField(
+        upload_to='uploads/contact/top/image', null=True, blank=True)
 
 
 class Category(models.Model):
@@ -44,7 +50,7 @@ class CategoryTop(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
 
 class FaqTop(models.Model):
@@ -58,7 +64,7 @@ class FaqTop(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title
 
 
 class ContactTop(models.Model):
@@ -72,4 +78,4 @@ class ContactTop(models.Model):
         ordering = ('-update_at', )
 
     def __str__(self):
-        return str(self.title)
+        return self.title
