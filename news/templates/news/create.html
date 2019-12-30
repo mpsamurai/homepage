@@ -16,8 +16,10 @@
 
             <div class="canvas_container">
                 <canvas class="canvas"></canvas>
-                <img style="display: none;" class="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                <img class="base_image" src="{% get_media_prefix %}/{{ field.value }}" alt="">
             </div>
+
+            <div class="btn-wrap choose">{{ field }}</div>
 
             <div class="slide_bar_container">
                 <input class="slide_bar_of_scaling" type="range">
@@ -28,13 +30,14 @@
 
             <div><input class="coordinate" type="hidden" name="hiddenImg" value=''></div>
 
-            <div class="fields-wrap">{{ field }}</div>
         {% elif field.html_name == 'thumbnail' %}
 
             <div class="canvas_container">
                 <canvas class="canvas"></canvas>
-                <img style="display: none;" class="base_image" style="position: absolute; top: 0; left: 0;" src="{% get_media_prefix %}/{{ field.value }}" alt="">
+                <img class="base_image" src="{% get_media_prefix %}/{{ field.value }}" alt="">
             </div>
+
+            <div class="btn-wrap choose">{{ field }}</div>
 
             <div class="slide_bar_container">
                 <input class="slide_bar_of_scaling" type="range">
@@ -45,38 +48,37 @@
 
             <div><input class="coordinate" type="hidden" name="hiddenThumb" value=''></div>
 
-            <div class="fields-wrap">{{ field }}</div>
         {% elif field.html_name == 'title' %}
             <div class="fields-wrap">
-                <div>{{ field.html_name }}：</div>
+                <div class="fields-title">{{ field.html_name }}：</div>
                 <div>{{ field }}</div>
             </div>
         {% elif field.html_name == 'article' %}
             <div class="fields-wrap">
-                <div>{{ field.html_name }}：</div>
+                <div class="fields-title">{{ field.html_name }}：</div>
                 <div>{{ field }}</div>
             </div>
         {% elif field.html_name == 'employee' %}
             <div class="fields-wrap">
-                <div>{{ field.html_name }}：</div>
+                <div class="fields-title">{{ field.html_name }}：</div>
                 <div>{{ field }}</div>
             </div>
         {% elif field.html_name == 'member' %}
             <div class="fields-wrap">
-                <div>{{ field.html_name }}：</div>
+                <div class="fields-title">{{ field.html_name }}：</div>
                 <div>{{ field }}</div>
             </div>
         {% elif field.html_name == 'tags' %}
             <div class="fields-wrap">
-                <div>{{ field.html_name }}：</div>
+                <div class="fields-title">{{ field.html_name }}：</div>
                 <div>{{ field }}</div>
             </div>
         {% elif field.html_name == 'is_topic' %}
-            <div class="fields-wrap">{{ field.html_name }}：{{ field }}</div>
+    <div class="fields-wrap"><div class="fields-title">{{ field.html_name }}：</div>{{ field }}</div>
         {% endif %}
     {% endfor %}
 
-    <div class="fields-wrap"><button type="submit">Submit</button></div>
+    <div class="btn-wrap submit"><button type="submit">Submit</button></div>
     <script type="text/javascript" src={% static 'js/news_upload.js' %}></script>
 </form>
 

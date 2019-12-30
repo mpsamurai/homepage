@@ -3,6 +3,7 @@
 {% block metadata %}
 {% load static %}
 <link rel="stylesheet" href='{% static "news/css/news.css" %}'>
+<link rel="stylesheet" href='{% static "news/css/news_edit.css" %}'>
 {% endblock %}
 
 {% block content %}
@@ -10,7 +11,7 @@
     <div class="news-section">
         <h1>My Articles</h1>
         <section class="post-list">
-            <ul>
+            <ul class="article-list">
                 {% for post in object_list %}
                 <li>
                     <p><a href="{% url 'news:update' post.pk %}">{{ post.title }}</a></p>
