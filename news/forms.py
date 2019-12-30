@@ -5,4 +5,4 @@ from PIL import Image
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = '__all__'
+        fields = ['updated_date', 'title', 'article', 'employee', 'member', 'tags', 'is_topic', 'image', 'thumbnail']
