@@ -3,7 +3,8 @@
 db.sqlite3
 media
 __pycache__
-*/migrations/*_*.py
 homepage.env
 cert
 **/create_user.sql
+*/migrations/0*.py
+
