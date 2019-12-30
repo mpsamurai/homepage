@@ -24,9 +24,9 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 
-STATICFILES_STORAGE = 'homepage.settings.backends.StaticFilesStorage'
+STATICFILES_STORAGE = 'homepage.backends.storages.StaticFilesStorage'
 
-DEFAULT_FILE_STORAGE = 'homepage.settings.backends.MediaStorage'
+DEFAULT_FILE_STORAGE = 'homepage.backends.storages.MediaStorage'
 
 AWS_S3_STATIC_ROOT = 'static'
 AWS_S3_MEDIA_ROOT = 'media'
