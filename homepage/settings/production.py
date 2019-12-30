@@ -32,3 +32,7 @@ AWS_S3_STATIC_ROOT = 'static'
 AWS_S3_MEDIA_ROOT = 'media'
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_STATIC_ROOT)
 MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_MEDIA_ROOT)
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]

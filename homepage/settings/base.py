@@ -83,7 +83,3 @@ USE_L10N = True
 USE_TZ = True
 
 DOORKEEPER_API_TOKEN = os.environ.get('DOORKEEPER_API_TOKEN')
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
