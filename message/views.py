@@ -9,9 +9,15 @@ from .models import Top
 
 def index(request):
     message = Message.objects.first()
-    educations = message.biographies.all().filter(
-        kind='education').order_by('started_at')
-    works = message.biographies.all().filter(kind='work').order_by('started_at')
+
+    if message != None:
+        educations = message.biographies.all().filter(
+            kind='education').order_by('started_at')
+        works = message.biographies.all().filter(kind='work').order_by('started_at')
+    elif message == None:
+        educations = []
+        works = []
+
     tops = Top.objects
     top = None
     if tops.exists():
